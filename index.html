@@ -945,6 +945,7 @@
    */
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSdyx3uNKZPhbhwg_eIc_VmRTvUNF8-Q5z9hunbr7seSuz2nNdO-awDI8qserEQHkr/exec';
         let allTasks = [];
+        let filteredTasks = []; // Track current search results for export
         let activeTaskId = null;
 
         // Calendar State
@@ -962,9 +963,14 @@
             feather.replace();
 
             // Event Listeners
-            document.getElementById('btn-search-trigger')?.addEventListener('click', () => {
-                performSearch();
-            });
+            const searchBtn = document.getElementById('btn-search-trigger');
+            if (searchBtn) {
+                console.log('Attaching search trigger listener');
+                searchBtn.onclick = () => {
+                    console.log('Search button clicked');
+                    performSearch();
+                };
+            }
 
             // Allow search on Enter key
             ['search-ref', 'search-style', 'search-customer', 'search-cnumber', 'search-dept'].forEach(id => {
@@ -973,9 +979,12 @@
                 });
             });
 
-            document.getElementById('btn-export')?.addEventListener('click', () => {
-                alert('Exporting search results...');
-            });
+            const exportBtn = document.getElementById('btn-export');
+            if (exportBtn) {
+                exportBtn.onclick = () => {
+                    exportToCSV();
+                };
+            }
 
             // Modal Close Listeners
             document.getElementById('close-details-btn')?.addEventListener('click', closeModal);
@@ -1322,28 +1331,80 @@
          * Performs filtering based on search fields.
          */
         function performSearch() {
-            const ref = document.getElementById('search-ref').value.toLowerCase();
-            const style = document.getElementById('search-style').value.toLowerCase();
-            const customer = document.getElementById('search-customer').value.toLowerCase();
-            const cnumber = document.getElementById('search-cnumber').value.toLowerCase();
-            const dept = document.getElementById('search-dept').value.toLowerCase();
+            console.log('Performing search...');
+            const ref = (document.getElementById('search-ref')?.value || '').toLowerCase();
+            const style = (document.getElementById('search-style')?.value || '').toLowerCase();
+            const customer = (document.getElementById('search-customer')?.value || '').toLowerCase();
+            const cnumber = (document.getElementById('search-cnumber')?.value || '').toLowerCase();
+            const dept = (document.getElementById('search-dept')?.value || '').toLowerCase();
+
+            if (!allTasks || allTasks.length === 0) {
+                console.warn('Search attempted but allTasks is empty.');
+                return;
+            }
 
             const filtered = allTasks.filter(task => {
-                // Reference is Title in Google Sheet
-                const refVal = (task.reference || task.raw?.Title || task.raw?.Reference || task.raw?.Ref || '').toLowerCase();
-                const styleVal = (task.style || '').toLowerCase();
-                const idVal = (task.id || '').toLowerCase();
+                const refVal = String(task.reference || task.id || '').toLowerCase();
+                const styleVal = String(task.style || '').toLowerCase();
+                const custVal = String(task.customer || '').toLowerCase();
+                const cnumVal = String(task.c_number || task.id || '').toLowerCase();
+                const deptVal = String(task.Cus_Dept || '').toLowerCase();
 
-                const matchesRef = !ref || refVal.includes(ref) || idVal.includes(ref);
+                const matchesRef = !ref || refVal.includes(ref);
                 const matchesStyle = !style || styleVal.includes(style);
-                const matchesCustomer = !customer || task.customer.toLowerCase().includes(customer);
-                const matchesCNumber = !cnumber || (task.c_number && task.c_number.toLowerCase().includes(cnumber));
-                const matchesDept = !dept || (task.Cus_Dept && task.Cus_Dept.toLowerCase().includes(dept));
+                const matchesCustomer = !customer || custVal.includes(customer);
+                const matchesCNumber = !cnumber || cnumVal.includes(cnumber);
+                const matchesDept = !dept || deptVal.includes(dept);
 
                 return matchesRef && matchesStyle && matchesCustomer && matchesCNumber && matchesDept;
             });
 
+            console.log(`Search complete. Found ${filtered.length} matches.`);
+            filteredTasks = filtered;
             renderTable(filtered);
+            updateStats(filtered);
+        }
+
+        /**
+         * Exports the currently visible tasks to a CSV file.
+         */
+        function exportToCSV() {
+            const dataToExport = filteredTasks.length > 0 || document.getElementById('search-ref').value || document.getElementById('search-style').value || document.getElementById('search-customer').value || document.getElementById('search-cnumber').value || document.getElementById('search-dept').value
+                ? filteredTasks 
+                : allTasks;
+
+            if (!dataToExport || dataToExport.length === 0) {
+                alert('No data available to export.');
+                return;
+            }
+
+            const headers = ['Request ID', 'Reference', 'Sample Type', 'Customer', 'Department', 'Status'];
+            const csvRows = [headers.join(',')];
+
+            dataToExport.forEach(task => {
+                const row = [
+                    `"${task.id}"`,
+                    `"${task.reference}"`,
+                    `"${task.Sample_Type}"`,
+                    `"${task.customer}"`,
+                    `"${task.Cus_Dept}"`,
+                    `"${task.status}"`
+                ];
+                csvRows.push(row.join(','));
+            });
+
+            const csvContent = csvRows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            
+            const timestamp = new Date().toISOString().split('T')[0];
+            link.setAttribute('href', url);
+            link.setAttribute('download', `revised_export_${timestamp}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         /**
@@ -1405,7 +1466,9 @@
 
                     return {
                         id: getVal(['requestidcnumber', 'cnumber', 'id', 'requestid', 'c_number']) || '-',
+                        c_number: getVal(['requestidcnumber', 'cnumber', 'id', 'requestid', 'c_number']) || '-',
                         reference: getVal(['title', 'reference', 'ref', 'stylename', 'style']) || '-',
+                        style: getVal(['style', 'stylename']) || '-',
                         Sample_Type:
                             sourceRow['Sample Type'] ||
                             sourceRow['Sample_Type'] ||
@@ -1421,6 +1484,7 @@
                 });
 
                 allTasks = mappedData;
+                filteredTasks = [...allTasks]; // Default filtered to all
 
                 // Initial UI Refresh
                 populateDatalists(allTasks);
@@ -1617,8 +1681,10 @@
                         return {
                             ...sourceRow,
                             id: getVal(['requestidcnumber', 'cnumber', 'id', 'requestid', 'c_number']) || '-',
+                            c_number: getVal(['requestidcnumber', 'cnumber', 'id', 'requestid', 'c_number']) || '-',
                             customer: getVal(['customer', 'client']) || '-',
                             reference: getVal(['title', 'reference', 'ref', 'stylename', 'style']) || '-',
+                            style: getVal(['style', 'stylename']) || '-',
                             Cus_Dept: getVal(['cusdept', 'customerdepartment', 'department']) || '-',
                             status: getVal(['status']) || 'Pending',
                             raw: sourceRow
