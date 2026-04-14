@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revised Tasks | Costing Application</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.29.2/dist/feather.min.js"></script>
+</head>
+<style>
+    /* Revised Screen Styles */
+    :root {
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+        --bg-main: #f8fafc;
+        --bg-card: #ffffff;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --border-color: #e2e8f0;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --radius-lg: 12px;
+        --radius-md: 8px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        line-height: 1.5;
+    }
+
+    /* Navbar */
+    .navbar {
+        height: 64px;
+        background: white;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+
+    .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: 18px;
+        color: var(--primary);
+    }
+
+    .brand-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--primary);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 24px;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: var(--text-muted);
+        font-size: 14px;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+        color: var(--primary);
+    }
+
+    /* Header */
+    .page-header {
+        padding: 40px 24px 24px;
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .subtitle {
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    h1 {
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        margin-top: 4px;
+    }
+
+    /* Main Content */
+    .main-content {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 0 24px 40px;
+    }
+
+    /* Cards & Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .card-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+    }
+
+    .card-value {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    /* Tables */
+    .table-container {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .table-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #f8fafc;
+        padding: 12px 24px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    td {
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 14px;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Buttons */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-hover);
+    }
+
+    .btn-outline {
+        background: white;
+        border: 1px solid var(--border-color);
+        color: var(--text-main);
+    }
+
+    .btn-outline:hover {
+        background: #f1f5f9;
+    }
+
+    .btn-secondary {
+        background: white;
+        border: 1px solid #bfdbfe;
+        color: #2563eb;
+    }
+
+    .btn-secondary:hover {
+        background: #eff6ff;
+        border-color: #3b82f6;
+    }
+
+    /* Glassmorphism effect */
+    .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Stepper & Wizard Styles */
+    .step-indicator {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .step-indicator.active {
+        background: var(--primary);
+        color: white;
+    }
+
+    .form-label-small {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #4b5563;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+    }
+
+    .origin-toggle {
+        transition: all 0.2s;
+        background: transparent;
+        color: #64748b;
+    }
+
+    .origin-toggle.active {
+        background: white !important;
+        color: var(--primary) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .step-content {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Photo Style Form Elements */
+    .form-label-photo {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #4b5563;
+    }
+
+    .form-input-photo {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1e293b;
+        background: white;
+        transition: all 0.2s;
+        outline: none;
+    }
+
+    .form-input-photo:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-input-photo::placeholder {
+        color: #94a3b8;
+        font-weight: 400;
+    }
+
+    .btn-submit-photo {
+        background: #2563eb;
+        color: white;
+        padding: 12px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-submit-photo:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-next-photo {
+        background: #2563eb;
+        color: white;
+        padding: 12px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-next-photo:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+    }
+
+    .btn-cancel-photo {
+        background: transparent;
+        color: #64748b;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1.5px solid #e2e8f0;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-cancel-photo:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
+
+    .btn-prev-photo {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-prev-photo:hover {
+        background: #e2e8f0;
+    }
+
+    /* SPECIFIC COSTING1.HTML STYLES FOR CALENDAR PARITY */
+    .btn-outline-blue {
+        background-color: transparent;
+        color: #2563eb;
+        border: 1px solid #2563eb;
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+
+    .btn-outline-blue:hover {
+        background-color: #eff6ff;
+    }
+
+    .status-indicator {
+        padding: 4px 10px;
+        border-radius: 99px;
+        font-size: 12px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background-color: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+    }
+</style>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v10l4.5 4.5" />
+                        <circle cx="12" cy="12" r="10" />
+                    </svg>
+                </div>
+                Revised
+            </div>
+            <div class="nav-links">
+                <a href="https://costing-home.vercel.app/">Home</a>
+                <a href="https://request-costing.vercel.app/">Request</a>
+                <a href="#" id="nav-revised" class="active">Revised</a>
+                <a href="#" id="nav-calendar">Calendar</a>
+            </div>
+        </div>
+        <div class="nav-right" style="display: flex; gap: 16px; align-items: center;">
+            <button class="btn btn-outline" style="padding: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+            </button>
+            <div class="avatar"
+                style="width: 32px; height: 32px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">
+                JD</div>
+        </div>
+    </nav>
+
+    <!-- Revised View Container -->
+    <div id="revised-view-section">
+        <header class="page-header animate-fade-in">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
+            <div>
+                <span class="subtitle">Production Hub</span>
+                <h1>Revised Search</h1>
+                <p style="color: var(--text-muted); margin-top: 8px;">Locate revised tasks by entering search criteria
+                    below.</p>
+            </div>
+            <!-- Dynamic Stats Container -->
+            <div style="display: flex; gap: 12px; margin-bottom: 8px;">
+                <div class="stat-pill">
+                    <span class="stat-label">Pending</span>
+                    <span id="stat-pending" class="stat-value">0</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-label">In Progress</span>
+                    <span id="stat-progress" class="stat-value">0</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-label">Completed</span>
+                    <span id="stat-completed" class="stat-value">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="card animate-fade-in" style="margin-bottom: 32px; padding: 32px;">
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; align-items: flex-end;">
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">Reference
+                        (Title)</label>
+                    <input type="text" id="search-ref" list="list-ref" placeholder="Reference..."
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); outline: none; font-size: 13px;">
+                    <datalist id="list-ref"></datalist>
+                </div>
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">Style</label>
+                    <input type="text" id="search-style" list="list-style" placeholder="Style..."
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); outline: none; font-size: 13px;">
+                    <datalist id="list-style"></datalist>
+                </div>
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">Customer</label>
+                    <input type="text" id="search-customer" list="list-customer" placeholder="Enter customer name..."
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); outline: none; font-size: 13px;">
+                    <datalist id="list-customer"></datalist>
+                </div>
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">C
+                        Number</label>
+                    <input type="text" id="search-cnumber" list="list-cnumber" placeholder="Enter C Number..."
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); outline: none; font-size: 13px;">
+                    <datalist id="list-cnumber"></datalist>
+                </div>
+                <div class="input-group">
+                    <label
+                        style="display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">Department</label>
+                    <input type="text" id="search-dept" list="list-dept" placeholder="Enter department..."
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); outline: none; font-size: 13px;">
+                    <datalist id="list-dept"></datalist>
+                </div>
+                <button class="btn btn-primary" id="btn-search-trigger"
+                    style="height: 40px; padding: 0 24px; font-weight: 700;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        style="margin-right: 8px;">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
+                    Search Tasks
+                </button>
+            </div>
+        </section>
+
+        <section class="card animate-fade-in"
+            style="padding: 0; overflow: hidden; border: none; box-shadow: var(--shadow-md);">
+            <div
+                style="padding: 24px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 style="font-size: 18px; font-weight: 700; color: #1e293b;">Revision Backlog</h2>
+                    <p style="font-size: 13px; color: var(--text-muted);">Real-time view of tasks requiring revision</p>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-outline" id="btn-filter"
+                        style="padding: 8px 16px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                        </svg>
+                        Filter
+                    </button>
+                    <button class="btn btn-primary" id="btn-export"
+                        style="padding: 8px 16px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: #6366f1; border: none;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Export Data
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-container" style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: separate; border-spacing: 0;">
+                    <thead style="background: #f8fafc;">
+                        <tr>
+                            <th
+                                style="padding: 12px 24px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid #e2e8f0;">
+                                Request ID (C Number)</th>
+                            <th
+                                style="padding: 12px 24px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid #e2e8f0;">
+                                Reference</th>
+                            <th
+                                style="padding: 12px 24px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid #e2e8f0;">
+                                Sample Type</th>
+                            <th
+                                style="padding: 12px 24px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid #e2e8f0;">
+                                Customer</th>
+                            <th
+                                style="padding: 12px 24px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid #e2e8f0;">
+                                Department</th>
+                            <th
+                                style="padding: 12px 24px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid #e2e8f0;">
+                                Status</th>
+                            <th
+                                style="padding: 12px 24px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid #e2e8f0;">
+                                Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="revised-table-body">
+                        <tr>
+                            <td colspan="10" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                                Initializing revised task stream...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Calendar View Section -->
+    <div class="calendar-section" id="calendar-view-section"
+        style="display: none; margin-bottom: 32px; background: white; padding: 24px; border-radius: 8px; box-shadow: var(--shadow-sm); max-width: 1440px; margin: 0 auto;">
+        <div class="calendar-header"
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <button class="btn btn-outline" id="cal-prev-btn"
+                style="padding: 6px 12px; background:white; color:var(--primary); border: 1px solid var(--border-color); font-weight: 600;">&lt;
+                Previous</button>
+
+            <div style="text-align: center;">
+                <h2 id="cal-month-title" style="margin: 0; font-size: 20px; font-weight: 700;">Month Year</h2>
+                <div id="cal-total-requests"
+                    style="font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px;">Total: 0
+                </div>
+            </div>
+
+            <button class="btn btn-outline" id="cal-next-btn"
+                style="padding: 6px 12px; background:white; color:var(--primary); border: 1px solid var(--border-color); font-weight: 600;">Next
+                &gt;</button>
+        </div>
+        <div
+            style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; margin-bottom: 10px; color: var(--text-muted); padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+        </div>
+        <div id="calendar-grid"
+            style="display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 100px; gap: 8px; text-align: left;">
+            <!-- Calendar cells rendered here via JS -->
+        </div>
+    </div>
+    </main>
+
+    <style>
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+
+    <!-- Calendar Day Requests Modal -->
+    <div class="modal" id="calendar-day-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
+        <div class="card"
+            style="width: 400px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
+            <h3 id="calendar-day-title"
+                style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; font-weight: 700;">
+                Requests for Date</h3>
+            <div id="calendar-day-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
+                <!-- Populated via JS -->
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="btn-outline-blue" id="close-calendar-day-btn"
+                    style="padding: 8px 16px; background:white; border:1px solid #e2e8f0; border-radius:8px; cursor:pointer; font-weight: 600;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div class="modal" id="details-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
+        <div class="card animate-fade-in"
+            style="width: 520px; padding: 32px; background: white; border-radius: 12px; max-height: 90vh; overflow-y: auto; border: none; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);">
+            <div style="margin-bottom: 24px; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px;">
+                <h3 style="font-size: 20px; font-weight: 700; color: #111827;">Request Details</h3>
+            </div>
+            <div id="details-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 32px;">
+                <!-- Populated via JS -->
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn btn-primary" id="btn-submit-revision"
+                    style="padding: 10px 28px; border-radius: 8px; font-weight: 600; background: #10b981; border: none; color: white;">Revised</button>
+                <button class="btn btn-secondary" id="close-details-btn"
+                    style="padding: 10px 28px; border-radius: 8px; font-weight: 600;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revision Entry Modal (Custom Design matching Photo) -->
+    <div class="modal" id="revision-entry-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); z-index: 3000; justify-content: center; align-items: center;">
+        <div class="card animate-fade-in"
+            style="width: 850px; padding: 40px; background: white; border-radius: 20px; max-height: 95vh; overflow-y: auto; border: none; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); position: relative;">
+
+            <!-- Top Right ID Badge (Updated: Request ID, No Lock) -->
+            <div
+                style="position: absolute; top: 20px; right: 40px; background: #f8fafc; border: 1.5px solid #e2e8f0; padding: 10px 20px; border-radius: 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <div style="text-align: right;">
+                    <span
+                        style="display: block; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Request
+                        ID</span>
+                    <span id="rev-id-badge-val" style="font-size: 15px; font-weight: 900; color: #334155;">-</span>
+                </div>
+                <div
+                    style="width: 36px; height: 36px; background: #3b82f6; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 40px;">
+                <h2
+                    style="font-size: 32px; font-weight: 900; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.02em;">
+                    Revised</h2>
+                <p style="font-size: 15px; color: #64748b; font-weight: 500;">Initiate a comprehensive manufacturing
+                    costing analysis and production plan.</p>
+            </div>
+
+            <form id="revision-form">
+                <!-- Step Indicators (Adapting the 'Step 1: Core Details' style) -->
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+                    <div
+                        style="width: 24px; height: 24px; border: 1.5px solid #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #3b82f6; font-size: 12px; font-weight: 700;">
+                        <span id="wizard-step-num">1</span>
+                    </div>
+                    <h4 style="font-size: 18px; font-weight: 700; color: #1e293b;" id="wizard-step-title">Step 1: Core
+                        Details</h4>
+                </div>
+
+                <!-- Step 1: Core Details (Refined order) -->
+                <div id="rev-step-1" class="step-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                        <div class="input-group">
+                            <label class="form-label-photo">Reference <span style="color: #ef4444;">*</span></label>
+                            <input type="text" id="rev-ref" class="form-input-photo" placeholder="Enter reference..."
+                                readonly style="background: #f8fafc;">
+                        </div>
+                        <div class="input-group">
+                            <label class="form-label-photo">Customer <span style="color: #ef4444;">*</span></label>
+                            <input type="text" id="rev-customer" class="form-input-photo"
+                                placeholder="Type or select customer..." readonly style="background: #f8fafc;">
+                        </div>
+                        <div class="input-group">
+                            <label class="form-label-photo">Customer Department <span
+                                    style="color: #ef4444;">*</span></label>
+                            <input type="text" id="rev-dept" class="form-input-photo"
+                                placeholder="Type or select department..." readonly style="background: #f8fafc;">
+                        </div>
+                        <div class="input-group">
+                            <label class="form-label-photo">Sample Type <span style="color: #ef4444;">*</span></label>
+                            <input type="text" id="rev-sample-type" class="form-input-photo" value="Revised" readonly
+                                style="background: #f8fafc;">
+                        </div>
+                        <div class="input-group">
+                            <label class="form-label-photo">Season <span style="color: #ef4444;">*</span></label>
+                            <input type="text" id="rev-season" class="form-input-photo"
+                                placeholder="Type or select season..." readonly style="background: #f8fafc;">
+                        </div>
+                        <div class="input-group">
+                            <label class="form-label-photo">Costing Ready Date <span
+                                    style="color: #ef4444;">*</span></label>
+                            <input type="date" id="rev-ready-date" class="form-input-photo">
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 24px;">
+                        <label class="form-label-photo">Remark</label>
+                        <textarea id="rev-remark" class="form-input-photo"
+                            style="height: 100px; resize: none; padding: 15px;"
+                            placeholder="Enter detailed remarks here..."></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label class="form-label-photo">Block Detail</label>
+                        <textarea id="rev-block" class="form-input-photo"
+                            style="height: 100px; resize: none; padding: 15px;"
+                            placeholder="Enter block details here..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Step 2: Main Fabric (matching Step 1 style) -->
+                <div id="rev-step-2" class="step-content" style="display: none;">
+                    <div style="background: #f1f5f9; padding: 32px; border-radius: 16px; margin-bottom: 32px;">
+                        <label class="form-label-photo" style="margin-bottom: 16px;">Fabric Origin Source</label>
+                        <div style="display: flex; gap: 12px;">
+                            <button type="button" id="origin-cdl" class="origin-toggle active"
+                                style="flex: 1; padding: 16px; border-radius: 12px; border: 1.5px solid #e2e8f0; background: white; font-weight: 700; cursor: pointer;">CDL</button>
+                            <button type="button" id="origin-external" class="origin-toggle"
+                                style="flex: 1; padding: 16px; border-radius: 12px; border: 1.5px solid #e2e8f0; background: white; font-weight: 700; cursor: pointer;">External</button>
+                        </div>
+                    </div>
+                    <div id="fabric-cdl-fields" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                        <div class="input-group">
+                            <label class="form-label-photo">Select CDL Fabric</label>
+                            <input type="text" id="rev-cdl-fabric" class="form-input-photo"
+                                placeholder="Search CDL fabric...">
+                        </div>
+                        <div class="input-group">
+                            <label class="form-label-photo">Fabric Header</label>
+                            <input type="text" id="rev-header" class="form-input-photo" placeholder="Header code...">
+                        </div>
+                    </div>
+                    <div id="fabric-external-fields" style="display: none;">
+                        <div class="input-group">
+                            <label class="form-label-photo">External fabric detail</label>
+                            <textarea id="rev-external-detail" class="form-input-photo"
+                                style="height: 140px; resize: none;"
+                                placeholder="Enter external fabric details..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Status -->
+                <div id="rev-step-3" class="step-content" style="display: none;">
+                    <div
+                        style="background: #f8fafc; padding: 40px; border-radius: 16px; border: 2.5px dashed #e2e8f0; text-align: center;">
+                        <div class="input-group" style="max-width: 720px; margin: 0 auto;">
+                            <label class="form-label-photo"
+                                style="margin-bottom: 16px; text-align: center; display: block;">Choose Status</label>
+                            <div id="rev-status-options"
+                                style="display: grid; grid-template-columns: repeat(3, minmax(150px, 1fr)); gap: 12px; justify-content: center;">
+                                <label
+                                    style="cursor: pointer; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px 16px; background: #fff; font-weight: 700; color: #1e293b; min-width: 120px;">
+                                    <input type="radio" name="rev-status-choice" value="All" style="margin-right: 8px;">
+                                    All
+                                </label>
+                                <label
+                                    style="cursor: pointer; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px 16px; background: #fff; font-weight: 700; color: #1e293b; min-width: 120px;">
+                                    <input type="radio" name="rev-status-choice" value="Pattern"
+                                        style="margin-right: 8px;">
+                                    Pattern
+                                </label>
+                                <label
+                                    style="cursor: pointer; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px 16px; background: #fff; font-weight: 700; color: #1e293b; min-width: 120px;">
+                                    <input type="radio" name="rev-status-choice" value="Conso"
+                                        style="margin-right: 8px;">
+                                    Conso
+                                </label>
+                                <label
+                                    style="cursor: pointer; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px 16px; background: #fff; font-weight: 700; color: #1e293b; min-width: 120px;">
+                                    <input type="radio" name="rev-status-choice" value="PRI" style="margin-right: 8px;">
+                                    PRI
+                                </label>
+                                <label
+                                    style="cursor: pointer; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px 16px; background: #fff; font-weight: 700; color: #1e293b; min-width: 120px;">
+                                    <input type="radio" name="rev-status-choice" value="ACC" style="margin-right: 8px;">
+                                    ACC
+                                </label>
+                                <label
+                                    style="cursor: pointer; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px 16px; background: #fff; font-weight: 700; color: #1e293b; min-width: 120px;">
+                                    <input type="radio" name="rev-status-choice" value="Techpack"
+                                        style="margin-right: 8px;">
+                                    Techpack
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Style Footer -->
+                <div
+                    style="margin-top: 48px; padding-top: 32px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div
+                            style="background: #ecfdf5; color: #059669; height: 36px; padding: 0 16px; border-radius: 10px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; border: 1px solid #d1fae5;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            OK to Proceed
+                        </div>
+                        <span style="color: #94a3b8; font-size: 13px; font-weight: 500;">Ready to save</span>
+                    </div>
+
+                    <div style="display: flex; gap: 12px;">
+                        <button type="button" class="btn-cancel-photo"
+                            onclick="document.getElementById('revision-entry-modal').style.display='none'">Cancel</button>
+                        <button type="button" class="btn-next-photo" id="btn-next"
+                            style="display: flex; align-items: center; gap: 8px;">
+                            Next Step
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg>
+                        </button>
+                        <button type="button" class="btn-prev-photo" id="btn-prev" style="display: none;">Go
+                            Back</button>
+                        <button type="submit" class="btn-submit-photo" id="btn-submit-rev"
+                            style="display: none; align-items: center; gap: 10px;">
+                            Submit Request
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div class="modal" id="filter-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div class="card animate-fade-in"
+            style="width: 400px; padding: 24px; background: white; border-radius: var(--radius-lg);">
+            <h3 style="margin-bottom: 20px; font-weight: 700;">Advanced Options</h3>
+            <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
+                <!-- Reusing search fields for now or adding specific ones if needed -->
+                <p style="font-size: 13px; color: var(--text-muted);">Use the primary search bar for advanced filtering
+                    across all fields.</p>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn btn-outline" id="close-filter-btn">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+   * Revised Screen Logic
+   * Handles data fetching, UI rendering, and user interactions for the Revised screen.
+   */
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSdyx3uNKZPhbhwg_eIc_VmRTvUNF8-Q5z9hunbr7seSuz2nNdO-awDI8qserEQHkr/exec';
+        let allTasks = [];
+        let activeTaskId = null;
+
+        // Calendar State
+        let requestsRows = [];
+        let calendarLoaded = false;
+        let calCurrentDate = new Date();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Revised Screen Initialized');
+
+            // Initial Load
+            loadRevisedTasks();
+            initWizardListeners();
+            setupNavigation();
+            feather.replace();
+
+            // Event Listeners
+            document.getElementById('btn-search-trigger')?.addEventListener('click', () => {
+                performSearch();
+            });
+
+            // Allow search on Enter key
+            ['search-ref', 'search-style', 'search-customer', 'search-cnumber', 'search-dept'].forEach(id => {
+                document.getElementById(id)?.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') performSearch();
+                });
+            });
+
+            document.getElementById('btn-export')?.addEventListener('click', () => {
+                alert('Exporting search results...');
+            });
+
+            // Modal Close Listeners
+            document.getElementById('close-details-btn')?.addEventListener('click', closeModal);
+            document.getElementById('close-details-btn-x')?.addEventListener('click', closeModal);
+            document.getElementById('close-filter-btn')?.addEventListener('click', () => {
+                document.getElementById('filter-modal').style.display = 'none';
+            });
+            document.getElementById('btn-filter')?.addEventListener('click', () => {
+                document.getElementById('filter-modal').style.display = 'flex';
+            });
+
+            // Calendar Modal Listeners
+            document.getElementById('close-calendar-day-btn')?.addEventListener('click', () => {
+                document.getElementById('calendar-day-modal').style.display = 'none';
+            });
+
+            document.getElementById('btn-submit-revision')?.addEventListener('click', () => {
+                handleRevisionSubmit();
+            });
+
+            document.getElementById('revision-form')?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveEditedRevision();
+            });
+        });
+
+        let currentStep = 1;
+
+        function initWizardListeners() {
+            // Fabric Origin Toggles
+            const btnCdl = document.getElementById('origin-cdl');
+            const btnExt = document.getElementById('origin-external');
+            const cdlFields = document.getElementById('fabric-cdl-fields');
+            const extFields = document.getElementById('fabric-external-fields');
+
+            btnCdl?.addEventListener('click', () => {
+                btnCdl.classList.add('active');
+                btnExt.classList.remove('active');
+                cdlFields.style.display = 'grid';
+                extFields.style.display = 'none';
+            });
+
+            btnExt?.addEventListener('click', () => {
+                btnExt.classList.add('active');
+                btnCdl.classList.remove('active');
+                extFields.style.display = 'block';
+                cdlFields.style.display = 'none';
+            });
+
+            // Navigation
+            document.getElementById('btn-next')?.addEventListener('click', () => {
+                if (currentStep < 3) goToStep(currentStep + 1);
+            });
+
+            document.getElementById('btn-prev')?.addEventListener('click', () => {
+                if (currentStep > 1) goToStep(currentStep - 1);
+            });
+        }
+
+        function goToStep(step) {
+            // Hide current
+            document.getElementById(`rev-step-${currentStep}`).style.display = 'none';
+
+            currentStep = step;
+
+            // Show new
+            document.getElementById(`rev-step-${currentStep}`).style.display = 'block';
+
+            // Update Step Header based on Photo Design
+            const stepTitles = {
+                1: 'Step 1: Core Details',
+                2: 'Step 2: Main Fabric Specifications',
+                3: 'Step 3: Choose Status'
+            };
+
+            document.getElementById('wizard-step-num').textContent = currentStep;
+            document.getElementById('wizard-step-title').textContent = stepTitles[currentStep];
+
+            // Controls
+            const btnNext = document.getElementById('btn-next');
+            const btnPrev = document.getElementById('btn-prev');
+            const btnSubmit = document.getElementById('btn-submit-rev');
+
+            btnPrev.style.display = (currentStep === 1) ? 'none' : 'flex';
+            btnNext.style.display = (currentStep === 3) ? 'none' : 'flex';
+            btnSubmit.style.display = (currentStep === 3) ? 'flex' : 'none';
+        }
+
+        function closeModal() {
+            document.getElementById('details-modal').style.display = 'none';
+        }
+
+        /**
+         * Opens the details modal for a specific task.
+         * @param {string} id - The task ID.
+         * @param {boolean} canRevise - Whether to show the Revised button.
+         */
+        function viewTask(id, canRevise = true) {
+            // Close calendar day modal if open
+            const calDayModal = document.getElementById('calendar-day-modal');
+            if (calDayModal) calDayModal.style.display = 'none';
+
+            activeTaskId = id;
+            // Search in both allTasks and requestsRows
+            const task = allTasks.find(t => t.id === id) || requestsRows.find(r => (r.id === id || r.C_Number === id));
+            if (!task) return;
+
+            const content = document.getElementById('details-content');
+            if (!content) return;
+
+            const detailSource = { ...(task.raw || {}), ...task };
+            const normalizeKey = (key) => String(key || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            const toLabel = (key) => String(key || '')
+                .replace(/[_\-]+/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .replace(/\b\w/g, (c) => c.toUpperCase());
+
+            const getValue = (aliases) => {
+                for (const alias of aliases) {
+                    const target = normalizeKey(alias);
+                    const matchedKey = Object.keys(detailSource).find(k => normalizeKey(k) === target);
+                    if (!matchedKey) continue;
+                    const val = detailSource[matchedKey];
+                    if (val !== undefined && val !== null && String(val).trim() !== '') {
+                        return val;
+                    }
+                }
+                return '-';
+            };
+
+            // Map to present exactly what the user requested, in a beautiful layout matching the photo
+            const displayFields = [
+                { label: 'Request ID', value: getValue(['requestidcnumber', 'cnumber', 'requestid', 'id']) },
+                { label: 'Reference', value: getValue(['title', 'reference', 'ref', 'style']) },
+                { label: 'Sample Type', value: getValue(['sample type', 'sample_type', 'sampletype', 'requesttype']) },
+                { label: 'Customer', value: getValue(['customer']) },
+                { label: 'Cus Dept', value: getValue(['cus_dept', 'cus dept', 'customerdepartment', 'department']) },
+                { label: 'TKL Season', value: getValue(['tkl_season', 'season']) },
+                { label: 'Main Fabric', value: getValue(['main_fabric', 'main fabric']) },
+                { label: 'Fabric Header', value: getValue(['fabric_header', 'fabric header']) },
+                { label: 'PL Name', value: getValue(['pl_name', 'pl name']) },
+                { label: 'Status', value: getValue(['status']) },
+                { label: 'Created', value: getValue(['created', 'created_date']) },
+                { label: 'Created By', value: getValue(['created by', 'created_by']) },
+                { label: 'Folder Path', value: getValue(['folder_path', 'folderlink', 'folder_link']) }
+            ];
+
+            const pinnedKeys = new Set([
+                'requestidcnumber', 'cnumber', 'requestid', 'id',
+                'title', 'reference', 'ref', 'style',
+                'sampletype', 'sample_type', 'requesttype',
+                'customer',
+                'cusdept', 'customerdepartment', 'department',
+                'tklseason', 'season',
+                'mainfabric',
+                'fabricheader',
+                'plname',
+                'status',
+                'created', 'createddate',
+                'createdby',
+                'folderpath', 'folderlink',
+                'raw'
+            ]);
+
+            Object.entries(task.raw || {}).forEach(([key, value]) => {
+                const normalized = normalizeKey(key);
+                if (pinnedKeys.has(normalized)) return;
+                if (value === undefined || value === null || String(value).trim() === '') return;
+                displayFields.push({ label: toLabel(key), value });
+            });
+
+            let html = '';
+
+            displayFields.forEach((field, idx) => {
+                let displayValue = field.value || '-';
+
+                // Handle special formatting for Folder Path
+                if (field.label === 'Folder Path' || field.label.toLowerCase().includes('folder')) {
+                    if (displayValue !== '-' && String(displayValue).startsWith('http')) {
+                        displayValue = `<a href="${displayValue}" target="_blank" style="color: #2563eb; text-decoration: underline; font-weight: 500;">Open Folder</a>`;
+                    } else {
+                        displayValue = '-';
+                    }
+                }
+
+                // Handle Status bolding if needed (the photo shows it's a bit bolder)
+                const isStatus = field.label === 'Status';
+                const valueStyle = isStatus ? 'font-weight: 700; color: #1f2937;' : 'font-weight: 500; color: #1f2937;';
+
+                html += `
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f1f5f9; gap: 20px;">
+                <span style="color: #64748b; font-weight: 500; font-size: 14px; min-width: 120px;">${field.label}</span>
+                <span style="${valueStyle} font-size: 14px; text-align: right; word-break: break-word;">${displayValue}</span>
+            </div>
+        `;
+            });
+
+            content.innerHTML = html;
+
+            // Show/Hide Revised button
+            const btnRevised = document.getElementById('btn-submit-revision');
+            if (btnRevised) {
+                btnRevised.style.display = canRevise ? 'inline-flex' : 'none';
+            }
+
+            document.getElementById('details-modal').style.display = 'flex';
+        }
+
+        /**
+         * Handles the logic when the 'Revised' button is clicked in the modal.
+         */
+        async function handleRevisionSubmit() {
+            if (!activeTaskId) return;
+
+            currentStep = 1;
+            goToStep(1);
+
+            // Logic to increment last 2 digits from 01 to 02 (or beyond)
+            let newId = activeTaskId;
+            const regex = /(\d{2})$/;
+            const match = activeTaskId.match(regex);
+            if (match) {
+                const nextNum = parseInt(match[1], 10) + 1;
+                newId = activeTaskId.replace(regex, String(nextNum).padStart(2, '0'));
+            }
+
+            const task = allTasks.find(t => t.id === activeTaskId);
+            if (!task) return;
+
+            const source = { ...(task.raw || {}), ...task };
+            const normalizeKey = (key) => String(key || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            const getFromSource = (aliases, fallback = '') => {
+                for (const alias of aliases) {
+                    const target = normalizeKey(alias);
+                    const matchedKey = Object.keys(source).find(k => normalizeKey(k) === target);
+                    if (!matchedKey) continue;
+                    const val = source[matchedKey];
+                    if (val !== undefined && val !== null && String(val).trim() !== '') {
+                        return val;
+                    }
+                }
+                return fallback;
+            };
+
+            // Set Header/Badge Details from PhotoDesign
+            document.getElementById('rev-id-badge-val').textContent = newId;
+
+            // Step 1 Population (carry over exact values from the previous request)
+            document.getElementById('rev-ref').value = getFromSource(['title', 'reference', 'ref', 'style'], task.reference || '');
+            document.getElementById('rev-customer').value = getFromSource(['customer'], task.customer || '');
+            document.getElementById('rev-dept').value = getFromSource(['cus_dept', 'cus dept', 'customerdepartment', 'department'], task.Cus_Dept || '');
+            document.getElementById('rev-sample-type').value = 'Revised';
+            document.getElementById('rev-season').value = getFromSource(['tkl_season', 'season'], task.TKL_Season || '');
+
+            // Format date for <input type="date"> (Expects YYYY-MM-DD)
+            if (task.due && task.due !== '-') {
+                const d = new Date(task.due);
+                if (!isNaN(d.getTime())) {
+                    document.getElementById('rev-ready-date').value = d.toISOString().split('T')[0];
+                }
+            }
+
+            document.getElementById('rev-block').value = task.raw?.['Block Detail'] || task.raw?.Block_Detail || '';
+            document.getElementById('rev-remark').value = '';
+            document.querySelectorAll('input[name="rev-status-choice"]').forEach((input) => {
+                input.checked = false;
+            });
+
+            // Step 2 Population
+            document.getElementById('rev-cdl-fabric').value = task.Main_Fabric || '';
+            document.getElementById('rev-header').value = task.Fabric_Header || '';
+
+            // Switch Modals
+            closeModal(); // Hide detail modal
+            document.getElementById('revision-entry-modal').style.display = 'flex';
+        }
+
+        /**
+         * Sends the edited revision data to the backend.
+         */
+        async function saveEditedRevision() {
+            const regex = /(\d{2})$/;
+            const match = activeTaskId.match(regex);
+            let newId = activeTaskId;
+            if (match) {
+                const nextNum = parseInt(match[1], 10) + 1;
+                newId = activeTaskId.replace(regex, String(nextNum).padStart(2, '0'));
+            }
+
+            const origin = document.getElementById('origin-cdl').classList.contains('active') ? 'CDL' : 'External';
+            const selectedStatusInput = document.querySelector('input[name="rev-status-choice"]:checked');
+            if (!selectedStatusInput) {
+                alert('Please choose a status in Step 3.');
+                return;
+            }
+
+            // Gather all fields from form
+            const formData = {
+                action: 'create_revision',
+                oldRequestId: activeTaskId,
+                newRequestId: newId,
+                status: selectedStatusInput.value,
+
+                // Step 1
+                Title: document.getElementById('rev-ref').value, // Reference field maps to Title column
+                Customer: document.getElementById('rev-customer').value,
+                Cus_Dept: document.getElementById('rev-dept').value,
+                Sample_Type: document.getElementById('rev-sample-type').value,
+                TKL_Season: document.getElementById('rev-season').value,
+                Costing_Ready_Date: document.getElementById('rev-ready-date').value,
+                Block_Detail: document.getElementById('rev-block').value,
+                Remarks: document.getElementById('rev-remark').value,
+
+                // Step 2
+                Fabric_Origin: origin,
+                Main_Fabric: origin === 'CDL' ? document.getElementById('rev-cdl-fabric').value : '',
+                Fabric_Header: origin === 'CDL' ? document.getElementById('rev-header').value : '',
+                External_Fabric_Detail: origin === 'External' ? document.getElementById('rev-external-detail').value : ''
+            };
+
+            try {
+                console.log(`📡 Sending wizard revision: ${activeTaskId} -> ${newId}`);
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert(`✅ Successfully saved revision ${newId} to Google Sheets!`);
+                    document.getElementById('revision-entry-modal').style.display = 'none';
+                    loadRevisedTasks();
+                } else {
+                    alert(`❌ Error: ${result.error}`);
+                }
+            } catch (error) {
+                console.error("Submission failed:", error);
+                alert(`❌ Failed to save: ${error.message}`);
+            }
+        }
+
+        /**
+         * Performs filtering based on search fields.
+         */
+        function performSearch() {
+            const ref = document.getElementById('search-ref').value.toLowerCase();
+            const style = document.getElementById('search-style').value.toLowerCase();
+            const customer = document.getElementById('search-customer').value.toLowerCase();
+            const cnumber = document.getElementById('search-cnumber').value.toLowerCase();
+            const dept = document.getElementById('search-dept').value.toLowerCase();
+
+            const filtered = allTasks.filter(task => {
+                // Reference is Title in Google Sheet
+                const refVal = (task.reference || task.raw?.Title || task.raw?.Reference || task.raw?.Ref || '').toLowerCase();
+                const styleVal = (task.style || '').toLowerCase();
+                const idVal = (task.id || '').toLowerCase();
+
+                const matchesRef = !ref || refVal.includes(ref) || idVal.includes(ref);
+                const matchesStyle = !style || styleVal.includes(style);
+                const matchesCustomer = !customer || task.customer.toLowerCase().includes(customer);
+                const matchesCNumber = !cnumber || (task.c_number && task.c_number.toLowerCase().includes(cnumber));
+                const matchesDept = !dept || (task.Cus_Dept && task.Cus_Dept.toLowerCase().includes(dept));
+
+                return matchesRef && matchesStyle && matchesCustomer && matchesCNumber && matchesDept;
+            });
+
+            renderTable(filtered);
+        }
+
+        /**
+         * Renders the table of revised tasks.
+         */
+        async function loadRevisedTasks() {
+            console.log("Fetching revised tasks from Data sheet...");
+            const tableBody = document.getElementById('revised-table-body');
+            if (tableBody) tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 48px;">Streaming Data sheet...</td></tr>';
+
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=${encodeURIComponent('Data')}&t=${new Date().getTime()}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const dataRows = await response.json();
+                console.log("Raw data received:", dataRows.length, "rows");
+
+                if (!Array.isArray(dataRows)) {
+                    console.error("Data is not an array:", dataRows);
+                    throw new Error("Invalid data format received from server.");
+                }
+
+                // Map and normalize fields
+                const mappedData = dataRows.map(row => {
+                    // Apps Script returns core fields at top-level and original sheet columns under `raw`.
+                    const sourceRow = (row && typeof row.raw === 'object' && row.raw !== null)
+                        ? { ...row, ...row.raw }
+                        : row;
+
+                    // Pre-process: Extreme normalization (keep only letters and numbers)
+                    const cleanRow = {};
+                    Object.keys(sourceRow).forEach(key => {
+                        const normalized = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+                        cleanRow[normalized] = sourceRow[key];
+                    });
+
+                    // Helper to find value from possible keys against the cleanRow
+                    const getVal = (possibleKeys) => {
+                        for (let k of possibleKeys) {
+                            const searchKey = k.toLowerCase().replace(/[^a-z0-9]/g, '');
+                            const val = cleanRow[searchKey];
+                            if (val !== undefined && val !== null && String(val).trim() !== '') {
+                                return val;
+                            }
+                        }
+                        return null;
+                    };
+
+                    // Fuzzy key lookup for cases where Google Sheet headers have unexpected punctuation/spacing.
+                    const getValByKeyIncludes = (requiredParts) => {
+                        const matchedKey = Object.keys(sourceRow).find((key) => {
+                            const normalizedKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+                            return requiredParts.every((part) => normalizedKey.includes(part));
+                        });
+                        if (!matchedKey) return null;
+                        const val = sourceRow[matchedKey];
+                        return (val !== undefined && val !== null && String(val).trim() !== '') ? val : null;
+                    };
+
+                    return {
+                        id: getVal(['requestidcnumber', 'cnumber', 'id', 'requestid', 'c_number']) || '-',
+                        reference: getVal(['title', 'reference', 'ref', 'stylename', 'style']) || '-',
+                        Sample_Type:
+                            sourceRow['Sample Type'] ||
+                            sourceRow['Sample_Type'] ||
+                            sourceRow['sample type'] ||
+                            getVal(['sampletype', 'sample_type', 'requesttype', 'sampleid', 'classification', 'category']) ||
+                            getValByKeyIncludes(['sample', 'type']) ||
+                            '-',
+                        customer: getVal(['customer', 'client']) || '-',
+                        Cus_Dept: getVal(['cusdept', 'customerdepartment', 'department']) || '-',
+                        status: getVal(['status']) || 'Pending',
+                        raw: (row && typeof row.raw === 'object' && row.raw !== null) ? row.raw : row
+                    };
+                });
+
+                allTasks = mappedData;
+
+                // Initial UI Refresh
+                populateDatalists(allTasks);
+                renderTable(allTasks);
+                updateStats(allTasks);
+
+                console.log("Revision Backlog ready.");
+            } catch (error) {
+                console.error("Load failed:", error);
+                if (tableBody) {
+                    tableBody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: #dc2626; padding: 48px;">
+                ❌ <b>Connection Error:</b> ${error.message}<br>
+                <small style="color: #94a3b8; margin-top: 8px; display: block;">Check console logs for details.</small>
+            </td></tr>`;
+                }
+            }
+        }
+
+        /**
+         * Populates datalists with unique values from the dataset.
+         */
+        function populateDatalists(data) {
+            const refs = new Set();
+            const styles = new Set();
+            const customers = new Set();
+            const cnumbers = new Set();
+            const depts = new Set();
+
+            data.forEach(task => {
+                const refVal = task.reference || task.raw?.Reference || task.raw?.Ref || '';
+                if (refVal) refs.add(refVal);
+                if (task.id) refs.add(task.id);
+
+                if (task.style) styles.add(task.style);
+                if (task.customer) customers.add(task.customer);
+                if (task.c_number) cnumbers.add(task.c_number);
+                if (task.Cus_Dept) depts.add(task.Cus_Dept);
+            });
+
+            fillDatalist('list-ref', refs);
+            fillDatalist('list-style', styles);
+            fillDatalist('list-customer', customers);
+            fillDatalist('list-cnumber', cnumbers);
+            fillDatalist('list-dept', depts);
+        }
+
+        function fillDatalist(id, values) {
+            const list = document.getElementById(id);
+            if (!list) return;
+            list.innerHTML = Array.from(values).map(val => `<option value="${val}">`).join('');
+        }
+
+        function renderTable(data) {
+            const tableBody = document.getElementById('revised-table-body');
+            if (!tableBody) return;
+
+            if (data.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 48px; color: var(--text-muted);">No tasks found.</td></tr>`;
+                return;
+            }
+
+            tableBody.innerHTML = data.map(task => {
+                return `
+        <tr class="animate-fade-in" style="animation-delay: ${Math.random() * 0.3}s">
+            <td style="font-weight: 700; color: var(--primary);">${task.id}</td>
+            <td style="font-weight: 500;">${task.reference}</td>
+            <td style="font-weight: 500;">${task.Sample_Type}</td>
+            <td>${task.customer}</td>
+            <td style="color: var(--text-muted); font-size: 13px;">${task.Cus_Dept || '-'}</td>
+            <td>
+                <span class="status-pill status-${task.status.toLowerCase().replace(' ', '-')}" 
+                      style="${getStatusStyle(task.status)}">
+                    ${task.status}
+                </span>
+            </td>
+            <td>
+                <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="viewTask('${task.id}', true)">
+                    View Detail
+                </button>
+            </td>
+        </tr>
+    `}).join('');
+        }
+
+        function getStatusStyle(status) {
+            const base = "padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;";
+            switch (status.toLowerCase()) {
+                case 'pending': return base + "background: #fef3c7; color: #92400e; border: 1px solid #fde68a;";
+                case 'in progress': return base + "background: #dbeafe; color: #1e3a8a; border: 1px solid #bfdbfe;";
+                case 'completed': return base + "background: #dcfce7; color: #166534; border: 1px solid #bbf7d0;";
+                default: return base + "background: #f1f5f9; color: #475569;";
+            }
+        }
+
+        function updateStats(data) {
+            const pending = data.filter(t => t.status === 'Pending').length;
+            const progress = data.filter(t => t.status === 'In Progress').length;
+            const completed = data.filter(t => t.status === 'Completed').length;
+
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-progress').textContent = progress;
+            document.getElementById('stat-completed').textContent = completed;
+        }
+
+        // --- NAVIGATION & CALENDAR LOGIC ---
+
+        function setupNavigation() {
+            const navRevised = document.getElementById("nav-revised");
+            const navCalendar = document.getElementById("nav-calendar");
+            const revisedSection = document.getElementById("revised-view-section");
+            const calendarSection = document.getElementById("calendar-view-section");
+
+            if (navRevised && navCalendar) {
+                navRevised.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    navRevised.classList.add("active");
+                    navCalendar.classList.remove("active");
+                    revisedSection.style.display = "block";
+                    calendarSection.style.display = "none";
+                });
+
+                navCalendar.addEventListener("click", async (e) => {
+                    e.preventDefault();
+                    navCalendar.classList.add("active");
+                    navRevised.classList.remove("active");
+                    revisedSection.style.display = "none";
+                    calendarSection.style.display = "block";
+
+                    if (!calendarLoaded) {
+                        await fetchCalendarData();
+                    } else {
+                        renderCalendar();
+                    }
+                });
+            }
+
+            // Calendar Navigation Buttons
+            document.getElementById('cal-prev-btn')?.addEventListener('click', () => {
+                calCurrentDate.setMonth(calCurrentDate.getMonth() - 1);
+                renderCalendar();
+            });
+            document.getElementById('cal-next-btn')?.addEventListener('click', () => {
+                calCurrentDate.setMonth(calCurrentDate.getMonth() + 1);
+                renderCalendar();
+            });
+        }
+
+        const globalParseSheetDate = (dateStr) => {
+            if (!dateStr || String(dateStr).trim() === '-' || String(dateStr).trim() === '') return null;
+            let parts = String(dateStr).trim().split(' ');
+            let datePart = parts[0];
+            let timePart = parts[1] || '00:00:00';
+            if (datePart.includes('/')) {
+                let pts = datePart.split('/');
+                if (pts.length === 3) {
+                    let yr = pts[2].length === 2 ? '20' + pts[2] : pts[2];
+                    let d = new Date(`${yr}-${pts[1]}-${pts[0]}T${timePart}`);
+                    if (!isNaN(d)) return d;
+                }
+            }
+            let fallback = new Date(dateStr);
+            return isNaN(fallback) ? null : fallback;
+        };
+
+        async function fetchCalendarData() {
+            const grid = document.getElementById("calendar-grid");
+            if (grid) grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px;">⏳ Loading calendar data from Data sheet...</div>';
+            try {
+                // Fetching from the same URL as the table
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=${encodeURIComponent('Data')}&t=${new Date().getTime()}`);
+                const data = await response.json();
+                if (data && !data.error) {
+                    // Extract and normalize data rows just like loadRevisedTasks
+                    requestsRows = (Array.isArray(data) ? data : []).map(row => {
+                        const sourceRow = (row && typeof row.raw === 'object' && row.raw !== null)
+                            ? { ...row, ...row.raw }
+                            : row;
+
+                        const cleanRow = {};
+                        Object.keys(sourceRow).forEach(key => {
+                            const normalized = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+                            cleanRow[normalized] = sourceRow[key];
+                        });
+
+                        const getVal = (possibleKeys) => {
+                            for (let k of possibleKeys) {
+                                const searchKey = k.toLowerCase().replace(/[^a-z0-9]/g, '');
+                                const val = cleanRow[searchKey];
+                                if (val !== undefined && val !== null && String(val).trim() !== '') return val;
+                            }
+                            return null;
+                        };
+
+                        return {
+                            ...sourceRow,
+                            id: getVal(['requestidcnumber', 'cnumber', 'id', 'requestid', 'c_number']) || '-',
+                            customer: getVal(['customer', 'client']) || '-',
+                            reference: getVal(['title', 'reference', 'ref', 'stylename', 'style']) || '-',
+                            Cus_Dept: getVal(['cusdept', 'customerdepartment', 'department']) || '-',
+                            status: getVal(['status']) || 'Pending',
+                            raw: sourceRow
+                        };
+                    });
+                    calendarLoaded = true;
+                    renderCalendar();
+                } else {
+                    if (grid) grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: red;">Error: ${data.error || 'Unknown error'}</div>`;
+                }
+            } catch (err) {
+                if (grid) grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: red;">Failed to fetch: ${err.message}</div>`;
+            }
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const year = calCurrentDate.getFullYear();
+            const month = calCurrentDate.getMonth();
+
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById('cal-month-title').textContent = `${monthNames[month]} ${year}`;
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            let dayCounts = {};
+            let monthTotal = 0;
+            requestsRows.forEach(row => {
+                const dateRaw = row.Created || row.createdDate || row.Requested_Date || row.requestedDate;
+                const d = globalParseSheetDate(dateRaw);
+                if (d && !isNaN(d)) {
+                    if (d.getFullYear() === year && d.getMonth() === month) {
+                        let day = d.getDate();
+                        dayCounts[day] = (dayCounts[day] || 0) + 1;
+                        monthTotal++;
+                    }
+                }
+            });
+
+            const totalEl = document.getElementById('cal-total-requests');
+            if (totalEl) {
+                totalEl.textContent = `Total this month: ${monthTotal} | Overall: ${requestsRows.length}`;
+            }
+
+            for (let x = 0; x < firstDayIndex; x++) {
+                let emptyCell = document.createElement('div');
+                emptyCell.style.background = '#f8fafc';
+                emptyCell.style.borderRadius = '6px';
+                grid.appendChild(emptyCell);
+            }
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                let dayCell = document.createElement('div');
+                dayCell.style.border = '1px solid #e2e8f0';
+                dayCell.style.borderRadius = '8px';
+                dayCell.style.padding = '8px';
+                dayCell.style.display = 'flex';
+                dayCell.style.flexDirection = 'column';
+                dayCell.style.backgroundColor = '#ffffff';
+
+                let dateNumber = document.createElement('strong');
+                dateNumber.style.color = '#334155';
+                dateNumber.textContent = i;
+                dayCell.appendChild(dateNumber);
+
+                if (dayCounts[i]) {
+                    let countBadge = document.createElement('div');
+                    countBadge.style.marginTop = 'auto';
+                    countBadge.style.backgroundColor = 'var(--primary)';
+                    countBadge.style.color = '#fff';
+                    countBadge.style.padding = '4px 8px';
+                    countBadge.style.borderRadius = '6px';
+                    countBadge.style.fontSize = '11px';
+                    countBadge.style.fontWeight = '700';
+                    countBadge.style.textAlign = 'center';
+                    countBadge.style.cursor = 'pointer';
+                    countBadge.textContent = `${dayCounts[i]} Request${dayCounts[i] > 1 ? 's' : ''}`;
+
+                    countBadge.addEventListener('mouseenter', () => countBadge.style.opacity = '0.8');
+                    countBadge.addEventListener('mouseleave', () => countBadge.style.opacity = '1');
+
+                    countBadge.addEventListener('click', () => {
+                        const dailyReqs = requestsRows.filter(r => {
+                            const dateRaw = r.Created || r.createdDate || r.Requested_Date || r.requestedDate;
+                            const rd = globalParseSheetDate(dateRaw);
+                            return rd && !isNaN(rd) && rd.getFullYear() === year && rd.getMonth() === month && rd.getDate() === i;
+                        });
+
+                        const modal = document.getElementById('calendar-day-modal');
+                        const title = document.getElementById('calendar-day-title');
+                        const content = document.getElementById('calendar-day-content');
+
+                        if (modal && title && content) {
+                            title.textContent = `Requests on ${monthNames[month]} ${i}, ${year}`;
+
+                            content.innerHTML = dailyReqs.map(r => {
+                                const displayId = r.id !== '-' ? r.id : (r.C_Number || 'Unknown');
+                                const customer = r.customer !== '-' ? r.customer : (r.Customer || 'No Customer');
+                                return `
+                                <div style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                                   <div style="display:flex; flex-direction: column;">
+                                       <span style="font-weight: 700; color: #1e293b;">${displayId}</span>
+                                       <span style="font-size: 12px; color: #64748b;">${customer}</span>
+                                   </div>
+                                   <button class="btn-outline-blue" onclick="viewTask('${displayId}', false)" style="padding: 4px 10px; font-size: 11px;">View Details</button>
+                                </div>
+                             `}).join('');
+                            modal.style.display = 'flex';
+                        }
+                    });
+                    dayCell.appendChild(countBadge);
+                }
+                grid.appendChild(dayCell);
+            }
+        }
+
+
+    </script>
+</body>
+</html>
