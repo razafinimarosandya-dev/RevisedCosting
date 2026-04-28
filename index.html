@@ -421,43 +421,92 @@
         background-color: #eff6ff;
     }
     
+    .fabric-table-wrapper {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+        overflow: hidden;
+    }
+
+    .fabric-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    .fabric-table th {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        background: #f8fafc;
+        font-weight: 700;
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .fabric-table td {
+        padding: 8px 12px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+        text-align: left;
+    }
+
+    .fabric-table-input {
+        width: 100%;
+        padding: 12px 14px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1e293b;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        background: #fff;
+        transition: all 0.2s;
+        outline: none;
+    }
+
+    .fabric-table-input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        background: #f8faff;
+    }
+
     .fabric-opt-chip {
-        border: 1px solid #bfdbfe;
+        border: 1.5px solid #bfdbfe;
         background: #eff6ff;
-        color: #1d4ed8;
-        border-radius: 6px;
-        width: 30px;
-        height: 30px;
+        color: #2563eb;
+        border-radius: 8px;
+        width: 32px;
+        height: 32px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-weight: 700;
+        font-weight: 800;
+        font-size: 13px;
     }
 
     .fabric-row-remove-btn {
-        border: 1px solid #fecaca;
+        border: 1.5px solid #fecaca;
         background: #fff1f2;
         color: #dc2626;
-        border-radius: 6px;
-        width: 24px;
-        height: 24px;
+        border-radius: 8px;
+        width: 32px;
+        height: 32px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         font-weight: 700;
-        line-height: 1;
+        transition: all 0.2s;
     }
-    
-    .fabric-table td input,
-    .fabric-table td select {
-        width: 100%;
-        padding: 0.5rem 0.6rem;
-        font-size: 0.85rem;
-        border: 1px solid #e2e8f0;
-        border-radius: 6px;
-        outline: none;
+
+    .fabric-row-remove-btn:hover {
+        background: #ffe4e6;
+        transform: scale(1.05);
     }
+
 
     .status-indicator {
         padding: 4px 10px;
@@ -857,18 +906,18 @@
                                 <button type="button" id="add-fabric-row-btn" class="btn-outline-blue">+ Add Ons</button>
                             </div>
     
-                            <div class="fabric-table-wrapper" style="width: 100%; overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff;">
-                                <table class="fabric-table" style="width: 100%; border-collapse: collapse; min-width: 760px;">
+                            <div class="fabric-table-wrapper" style="width: 100%; overflow-x: auto;">
+                                <table class="fabric-table" style="min-width: 900px;">
                                     <thead>
                                         <tr>
-                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">opt</th>
-                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">Type</th>
-                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">Fabric</th>
-                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">Header</th>
-                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">GMs</th>
-                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">Composition</th>
-                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">Width</th>
-                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">Action</th>
+                                            <th style="width: 60px;">opt</th>
+                                            <th style="width: 120px;">Type</th>
+                                            <th style="width: 200px;">Fabric</th>
+                                            <th style="width: 120px;">Header</th>
+                                            <th style="width: 90px;">GMs</th>
+                                            <th style="width: 200px;">Composition</th>
+                                            <th style="width: 90px;">Width</th>
+                                            <th style="width: 60px; text-align: center;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="fabric-table-body"></tbody>
@@ -1416,13 +1465,13 @@
                              const row = document.createElement("tr");
                              row.innerHTML = `
                                 <td><span class="fabric-opt-chip">${item.opt || optLabels[idx] || ''}</span></td>
-                                <td><select class="fabric-row-type" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%; min-width: 100px;">${createTypeOptions(item.type || '')}</select></td>
-                                <td><input type="text" class="fabric-row-fabric" value="${item.fabric || ''}" placeholder="Fabric" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
-                                <td><input type="text" class="fabric-row-header" value="${item.header || ''}" placeholder="Header" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
-                                <td><input type="text" class="fabric-row-gms" value="${item.gms || ''}" placeholder="GMs" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
-                                <td><input type="text" class="fabric-row-composition" value="${item.composition || ''}" placeholder="Composition" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
-                                <td><input type="text" class="fabric-row-width" value="${item.width || ''}" placeholder="Width" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
-                                <td><button type="button" class="fabric-row-remove-btn" title="Remove row">x</button></td>
+                                <td><select class="fabric-row-type fabric-table-input">${createTypeOptions(item.type || '')}</select></td>
+                                <td><input type="text" class="fabric-row-fabric fabric-table-input" value="${item.fabric || ''}" placeholder="Fabric"></td>
+                                <td><input type="text" class="fabric-row-header fabric-table-input" value="${item.header || ''}" placeholder="Header"></td>
+                                <td><input type="text" class="fabric-row-gms fabric-table-input" value="${item.gms || ''}" placeholder="GMs"></td>
+                                <td><input type="text" class="fabric-row-composition fabric-table-input" value="${item.composition || ''}" placeholder="Composition"></td>
+                                <td><input type="text" class="fabric-row-width fabric-table-input" value="${item.width || ''}" placeholder="Width"></td>
+                                <td style="text-align: center;"><button type="button" class="fabric-row-remove-btn" title="Remove row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></td>
                             `;
                             const removeBtn = row.querySelector(".fabric-row-remove-btn");
                             if (removeBtn) {
@@ -1503,13 +1552,13 @@
                 const optLabel = optLabels[tableBody.children.length] || "";
                 row.innerHTML = `
                     <td><span class="fabric-opt-chip">${optLabel}</span></td>
-                    <td><select class="fabric-row-type" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%; min-width: 100px;">${createTypeOptions(rowType)}</select></td>
-                    <td><input type="text" class="fabric-row-fabric" placeholder="Fabric" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
-                    <td><input type="text" class="fabric-row-header" placeholder="Header" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
-                    <td><input type="text" class="fabric-row-gms" placeholder="GMs" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
-                    <td><input type="text" class="fabric-row-composition" placeholder="Composition" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
-                    <td><input type="text" class="fabric-row-width" placeholder="Width" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
-                    <td><button type="button" class="fabric-row-remove-btn" title="Remove row">x</button></td>
+                    <td><select class="fabric-row-type fabric-table-input">${createTypeOptions(rowType)}</select></td>
+                    <td><input type="text" class="fabric-row-fabric fabric-table-input" placeholder="Fabric"></td>
+                    <td><input type="text" class="fabric-row-header fabric-table-input" placeholder="Header"></td>
+                    <td><input type="text" class="fabric-row-gms fabric-table-input" placeholder="GMs"></td>
+                    <td><input type="text" class="fabric-row-composition fabric-table-input" placeholder="Composition"></td>
+                    <td><input type="text" class="fabric-row-width fabric-table-input" placeholder="Width"></td>
+                    <td style="text-align: center;"><button type="button" class="fabric-row-remove-btn" title="Remove row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></td>
                 `;
                 const removeBtn = row.querySelector(".fabric-row-remove-btn");
                 if (removeBtn) {
@@ -1942,15 +1991,22 @@
 
         const getNextRevisedId = (currentId) => {
             if (!currentId || currentId === '-') return '-';
-            const regex = /(\d{2})$/;
-            const match = String(currentId).match(regex);
-            if (match) {
-                const nextNum = parseInt(match[1], 10) + 1;
-                return currentId.replace(regex, String(nextNum).padStart(2, '0'));
+            
+            // Expected format: C26042801-01
+            const parts = String(currentId).split('-');
+            if (parts.length > 1) {
+                const suffix = parts[parts.length - 1]; // e.g. "01"
+                const base = parts.slice(0, -1).join('-'); // e.g. "C26042801"
+                
+                const num = parseInt(suffix, 10);
+                if (!isNaN(num)) {
+                    const nextNum = num + 1;
+                    return base + '-' + String(nextNum).padStart(2, '0');
+                }
             }
-            // If no 2-digit suffix, append -01 or increment if it ends in a single digit? 
-            // Better to just follow the existing logic or simple suffix if mismatch.
-            return currentId + '-01';
+            
+            // If No Dash found or Suffix is not a number
+            return currentId + '-02'; 
         };
 
         const globalParseSheetDate = (dateStr) => {
