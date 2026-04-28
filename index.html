@@ -1173,8 +1173,6 @@
                 { label: 'Customer', value: getValue(['customer']) },
                 { label: 'Cus Dept', value: getValue(['cus_dept', 'cus dept', 'customerdepartment', 'department']) },
                 { label: 'TKL Season', value: getValue(['tkl_season', 'season']) },
-                { label: 'Main Fabric', value: getValue(['main_fabric', 'main fabric']) },
-                { label: 'Fabric Header', value: getValue(['fabric_header', 'fabric header']) },
                 { label: 'PL Name', value: getValue(['pl_name', 'pl name']) },
                 { label: 'Status', value: getValue(['status']) },
                 { label: 'Costing Ready Date', value: getValue(['costing_ready_date', 'costing ready date', 'costing rd', 'due', 'costingexpecteddate']) },
@@ -1183,7 +1181,7 @@
                 { label: 'Folder Path', value: getValue(['folder_path', 'folderlink', 'folder_link']) }
             ];
 
-            let html = '';
+            let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">';
 
             displayFields.forEach((field, idx) => {
                 let displayValue = field.value || '-';
@@ -1195,23 +1193,77 @@
                 // Handle special formatting for Folder Path
                 if (field.label === 'Folder Path' || field.label.toLowerCase().includes('folder')) {
                     if (displayValue !== '-' && String(displayValue).startsWith('http')) {
-                        displayValue = `<a href="${displayValue}" target="_blank" style="color: #2563eb; text-decoration: underline; font-weight: 500;">Open Folder</a>`;
+                        displayValue = `<a href="${displayValue}" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 700;">Open Folder</a>`;
                     } else {
                         displayValue = '-';
                     }
                 }
 
-                // Handle Status bolding if needed (the photo shows it's a bit bolder)
                 const isStatus = field.label === 'Status';
-                const valueStyle = isStatus ? 'font-weight: 700; color: #1f2937;' : 'font-weight: 500; color: #1f2937;';
+                const isPrimary = field.label === 'Request ID' || field.label === 'Reference';
+                const cardStyle = isPrimary ? 'border-left: 4px solid #f97316;' : '';
 
                 html += `
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f1f5f9; gap: 20px;">
-                <span style="color: #64748b; font-weight: 500; font-size: 14px; min-width: 120px;">${field.label}</span>
-                <span style="${valueStyle} font-size: 14px; text-align: right; word-break: break-word;">${displayValue}</span>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; ${cardStyle}">
+                <span style="font-size: 11px; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; font-weight: 600;">${field.label}</span>
+                <span style="font-size: 14px; color: #0f172a; font-weight: 500; word-break: break-word;">${displayValue}</span>
             </div>
         `;
             });
+            html += '</div>';
+
+            // Custom Tabular rendering for Fabric Add Ons
+            const fabricAddOns = getValue(['fabric_add_ons', 'fabric add ons', 'fabricaddons']);
+            if (fabricAddOns && fabricAddOns !== '-') {
+                let rows = [];
+                if (typeof fabricAddOns === 'string' && fabricAddOns.trim() !== '') {
+                    try {
+                        rows = JSON.parse(fabricAddOns);
+                    } catch {
+                        let obj = {};
+                        fabricAddOns.split('|').forEach(part => {
+                            let parts = part.split(':');
+                            if(parts.length >= 2) {
+                                let k = parts.shift().trim();
+                                let v = parts.join(':').trim();
+                                obj[k] = v;
+                            }
+                        });
+                        if (Object.keys(obj).length > 0) rows.push(obj);
+                    }
+                } else if (Array.isArray(fabricAddOns)) {
+                    rows = fabricAddOns;
+                }
+
+                if (rows && rows.length > 0) {
+                    let headersSet = new Set();
+                    rows.forEach(r => Object.keys(r).forEach(k => headersSet.add(k)));
+                    const headers = Array.from(headersSet);
+
+                    if (headers.length > 0) {
+                        html += `
+                        <div style="margin-top: 16px; margin-bottom: 24px;">
+                           <h4 style="font-size: 14px; font-weight: 600; color: #1e293b; margin-bottom: 12px;">Fabric Details</h4>
+                           <div style="overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px; background: white;">
+                               <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                                   <thead>
+                                       <tr>
+                                           ${headers.map(h => `<th style="background: #f8fafc; padding: 10px 12px; font-weight: 600; color: #475569; font-size: 12px; border-bottom: 2px solid #e2e8f0; text-transform: capitalize;">${h}</th>`).join('')}
+                                       </tr>
+                                   </thead>
+                                   <tbody>
+                                       ${rows.map(r => `
+                                           <tr>
+                                               ${headers.map(h => `<td style="padding: 10px 12px; font-size: 13px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">${r[h] || '-'}</td>`).join('')}
+                                           </tr>
+                                       `).join('')}
+                                   </tbody>
+                               </table>
+                           </div>
+                        </div>`;
+                    }
+                }
+            }
 
             content.innerHTML = html;
 
