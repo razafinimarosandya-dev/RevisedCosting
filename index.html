@@ -1251,10 +1251,7 @@
         let calendarLoaded = false;
         let calCurrentDate = new Date();
 
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('Revised Screen Initialized');
-
-        // --- GLOBAL SESSION MANAGEMENT ---
+        // --- SESSION MANAGEMENT ---
         const REMEMBERED_USER_KEY = 'ACC_REMEMBERED_USER';
         
         function consumeUrlSession() {
@@ -1299,15 +1296,11 @@
             try { sessionData = JSON.parse(storedData || 'null'); } catch(e) { console.error('JSON parse error session:', e); }
             
             if (sessionData) {
-                // Extended fallback mapping
                 const name = sessionData.username || sessionData.name || sessionData.loginId || (sessionData.user && sessionData.user.name) || 'User';
                 const email = sessionData.email || sessionData.loginId || (sessionData.user && sessionData.user.email) || 'No email provided';
                 
-                // Update UI Display
                 if (dropdownName) dropdownName.textContent = name;
                 if (dropdownEmail) dropdownEmail.textContent = email;
-                
-                // Update Avatar
                 userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff&bold=true`;
                 userAvatar.alt = name;
             } else {
@@ -1315,7 +1308,6 @@
                 if (dropdownName) dropdownName.textContent = 'Welcome';
             }
 
-            // Dropdown Toggles
             profileTrigger.addEventListener('click', (e) => {
                 e.stopPropagation();
                 userDropdown.classList.toggle('active');
@@ -1323,7 +1315,7 @@
             });
 
             document.addEventListener('click', (e) => {
-                if (userDropdown.classList.contains('active') && !profileTrigger.contains(e.target)) {
+                if (userDropdown?.classList.contains('active') && !profileTrigger.contains(e.target)) {
                     userDropdown.classList.remove('active');
                 }
             });
