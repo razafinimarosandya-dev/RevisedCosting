@@ -2169,7 +2169,15 @@
 
             let dayCounts = {};
             requestsRows.forEach(row => {
-                const dateRaw = row.Created || row.createdDate || row.Requested_Date || row.requestedDate;
+                const getRowVal = (keys) => {
+                    for (let k of keys) {
+                        if (row[k] !== undefined && row[k] !== null && row[k] !== '') return row[k];
+                        if (row.raw && row.raw[k] !== undefined && row.raw[k] !== null && row.raw[k] !== '') return row.raw[k];
+                    }
+                    return null;
+                };
+
+                const dateRaw = getRowVal(['Created', 'createdDate', 'Requested_Date', 'requestedDate', 'Date', 'Requested Date']);
                 const d = globalParseSheetDate(dateRaw);
                 if (d && !isNaN(d) && d.getFullYear() === year && d.getMonth() === month) {
                     let day = d.getDate();
@@ -2208,7 +2216,14 @@
                     
                     badge.onclick = () => {
                         const dailyReqs = requestsRows.filter(r => {
-                            const d = globalParseSheetDate(r.Created || r.createdDate || r.Requested_Date || r.requestedDate);
+                            const getVal = (row, keys) => {
+                                for (let k of keys) {
+                                    if (row[k] !== undefined && row[k] !== null && row[k] !== '') return row[k];
+                                    if (row.raw && row.raw[k] !== undefined && row.raw[k] !== null && row.raw[k] !== '') return row.raw[k];
+                                }
+                                return null;
+                            };
+                            const d = globalParseSheetDate(getVal(r, ['Created', 'createdDate', 'Requested_Date', 'requestedDate', 'Date', 'Requested Date']));
                             return d && d.getFullYear() === year && d.getMonth() === month && d.getDate() === i;
                         });
 
