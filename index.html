@@ -754,8 +754,8 @@
                 Revised
             </div>
             <div class="nav-links">
-                <a href="https://costing-home.vercel.app/">Home</a>
-                <a href="https://request-costing.vercel.app/">Request</a>
+                <a href="#" onclick="redirectTo('https://costing-home.vercel.app/')">Home</a>
+                <a href="#" onclick="redirectTo('https://request-costing.vercel.app/')">Request</a>
                 <a href="#" id="nav-revised" class="active">Revised</a>
                 <a href="#" id="nav-calendar">Calendar</a>
             </div>
@@ -1253,6 +1253,26 @@
 
         // --- SESSION MANAGEMENT ---
         const REMEMBERED_USER_KEY = 'ACC_REMEMBERED_USER';
+
+        /**
+         * Cross-domain redirect helper that appends session data to the URL
+         */
+        function redirectTo(url) {
+            if (!url) return;
+            const sessionData = localStorage.getItem(REMEMBERED_USER_KEY);
+            if (sessionData) {
+                try {
+                    const encodedSession = btoa(unescape(encodeURIComponent(sessionData)));
+                    const separator = url.includes('?') ? '&' : '?';
+                    window.location.href = `${url}${separator}session=${encodedSession}`;
+                } catch (e) {
+                    console.error('[REDIRECT] Encoding failed:', e);
+                    window.location.href = url;
+                }
+            } else {
+                window.location.href = url;
+            }
+        }
         
         function consumeUrlSession() {
             const hash = window.location.hash;
