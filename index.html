@@ -1165,48 +1165,50 @@
                 );
             };
 
-            // Curated fields only (prevents repeated raw duplicates in detail modal)
-            const displayFields = [
+            // Curated fields array
+            const mainFields = [
                 { label: 'Request ID', value: getValue(['requestidcnumber', 'cnumber', 'requestid', 'id']) },
-                { label: 'Reference', value: getValue(['title', 'reference', 'ref', 'style', 'customerref']) },
+                { label: 'Customer Ref', value: getValue(['title', 'reference', 'ref', 'style', 'customerref']) },
                 { label: 'Sample Type', value: getValue(['sample type', 'sample_type', 'sampletype', 'requesttype']) },
                 { label: 'Customer', value: getValue(['customer']) },
-                { label: 'Cus Dept', value: getValue(['cus_dept', 'cus dept', 'customerdepartment', 'department']) },
+                { label: 'Customer Department', value: getValue(['cus_dept', 'cus dept', 'customerdepartment', 'department']) },
                 { label: 'TKL Season', value: getValue(['tkl_season', 'season']) },
                 { label: 'PL Name', value: getValue(['pl_name', 'pl name']) },
                 { label: 'Status', value: getValue(['status']) },
-                { label: 'Costing Ready Date', value: getValue(['costing_ready_date', 'costing ready date', 'costing rd', 'due', 'costingexpecteddate']) },
+                { label: 'Costing Expected Date', value: getValue(['costing_ready_date', 'costing ready date', 'costing rd', 'due', 'costingexpecteddate']) },
                 { label: 'Created', value: getValue(['created', 'created_date']) },
-                { label: 'Created By', value: getValue(['created by', 'created_by']) },
-                { label: 'Folder Path', value: getValue(['folder_path', 'folderlink', 'folder_link']) }
+                { label: 'Created By', value: getValue(['created by', 'created_by']) }
+            ];
+
+            const remarkFields = [
+                { label: 'Req_Remarks', value: getValue(['req_remarks', 'req remarks', 'remarks']) },
+                { label: 'Techpack_Remarks', value: getValue(['techpack_remarks', 'techpack remarks', 'techpackremarks']) },
+                { label: 'Pattern_Remarks', value: getValue(['pattern_remarks', 'pattern remarks', 'patternremarks']) },
+                { label: 'Reverse_Remarks', value: getValue(['reverse_remarks', 'reverse remarks', 'reverseremarks']) },
+                { label: 'Conso_Remarks', value: getValue(['conso_remarks', 'conso remarks', 'consoremarks']) },
+                { label: 'Lateness_Remarks', value: getValue(['lateness_remarks', 'lateness remarks', 'latenessremarks']) }
             ];
 
             let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">';
 
-            displayFields.forEach((field, idx) => {
+            [...mainFields, ...remarkFields].forEach((field) => {
                 let displayValue = field.value || '-';
+                const isRemark = field.label.toLowerCase().includes('remarks');
+                
+                if (isRemark && (displayValue === '-' || String(displayValue).trim() === '')) return; // Hide empty remarks
 
                 if (isDateField(field.label)) {
                     displayValue = formatDateOnly(displayValue);
                 }
 
-                // Handle special formatting for Folder Path
-                if (field.label === 'Folder Path' || field.label.toLowerCase().includes('folder')) {
-                    if (displayValue !== '-' && String(displayValue).startsWith('http')) {
-                        displayValue = `<a href="${displayValue}" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 700;">Open Folder</a>`;
-                    } else {
-                        displayValue = '-';
-                    }
-                }
-
-                const isStatus = field.label === 'Status';
-                const isPrimary = field.label === 'Request ID' || field.label === 'Reference';
-                const cardStyle = isPrimary ? 'border-left: 4px solid #f97316;' : '';
+                const isPrimary = field.label === 'Request ID' || field.label === 'Customer Ref';
+                let cardStyle = isPrimary ? 'border-left: 4px solid #f97316;' : '';
+                if (isRemark) cardStyle += ' grid-column: 1 / -1;'; // Full line width wrapper
 
                 html += `
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; ${cardStyle}">
-                <span style="font-size: 11px; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; font-weight: 600;">${field.label}</span>
-                <span style="font-size: 14px; color: #0f172a; font-weight: 500; word-break: break-word;">${displayValue}</span>
+                <span style="font-size: 11px; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; font-weight: 600;">${field.label.replace(/_/g, ' ')}</span>
+                <span style="font-size: 14px; color: #0f172a; font-weight: 500; word-break: break-word; ${isRemark ? 'white-space: pre-wrap;' : ''}">${displayValue}</span>
             </div>
         `;
             });
@@ -1263,6 +1265,24 @@
                         </div>`;
                     }
                 }
+            }
+
+            // Render Folder Path separately below Fabric Details
+            const folderValue = getValue(['folder_path', 'folderlink', 'folder_link']) || '-';
+            if (folderValue !== '-' && String(folderValue).startsWith('http')) {
+                html += `
+                <div style="margin-top: 16px; padding: 16px; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0;">
+                    <div style="font-size: 11px; text-transform: uppercase; color: #2563eb; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 4px;">Folder Path</div>
+                    <a href="${folderValue}" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 600; font-size: 14px; word-break: break-all;">Open Dedicated System Folder</a>
+                </div>
+                `;
+            } else {
+                 html += `
+                <div style="margin-top: 16px; padding: 16px; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0;">
+                    <div style="font-size: 11px; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 4px;">Folder Path</div>
+                    <span style="color: #0f172a; font-weight: 500; font-size: 14px;">-</span>
+                </div>
+                `;
             }
 
             content.innerHTML = html;
