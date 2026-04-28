@@ -930,7 +930,7 @@
    * Revised Screen Logic
    * Handles data fetching, UI rendering, and user interactions for the Revised screen.
    */
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSdyx3uNKZPhbhwg_eIc_VmRTvUNF8-Q5z9hunbr7seSuz2nNdO-awDI8qserEQHkr/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZ4f9sdtoTb2Ps0E5Q8NX1FV7qhfJXEx-AzazDqZLfsnkfKhV3xqEMBPVGdTYuWh8TSg/exec';
         let allTasks = [];
         let filteredTasks = []; // Track current search results for export
         let activeTaskId = null;
@@ -1168,7 +1168,7 @@
             // Curated fields only (prevents repeated raw duplicates in detail modal)
             const displayFields = [
                 { label: 'Request ID', value: getValue(['requestidcnumber', 'cnumber', 'requestid', 'id']) },
-                { label: 'Reference', value: getValue(['title', 'reference', 'ref', 'style']) },
+                { label: 'Reference', value: getValue(['title', 'reference', 'ref', 'style', 'customerref']) },
                 { label: 'Sample Type', value: getValue(['sample type', 'sample_type', 'sampletype', 'requesttype']) },
                 { label: 'Customer', value: getValue(['customer']) },
                 { label: 'Cus Dept', value: getValue(['cus_dept', 'cus dept', 'customerdepartment', 'department']) },
@@ -1177,7 +1177,7 @@
                 { label: 'Fabric Header', value: getValue(['fabric_header', 'fabric header']) },
                 { label: 'PL Name', value: getValue(['pl_name', 'pl name']) },
                 { label: 'Status', value: getValue(['status']) },
-                { label: 'Costing Ready Date', value: getValue(['costing_ready_date', 'costing ready date', 'costing rd', 'due']) },
+                { label: 'Costing Ready Date', value: getValue(['costing_ready_date', 'costing ready date', 'costing rd', 'due', 'costingexpecteddate']) },
                 { label: 'Created', value: getValue(['created', 'created_date']) },
                 { label: 'Created By', value: getValue(['created by', 'created_by']) },
                 { label: 'Folder Path', value: getValue(['folder_path', 'folderlink', 'folder_link']) }
@@ -1467,7 +1467,7 @@
             if (tableBody) tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 48px;">Streaming Data sheet...</td></tr>';
 
             try {
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=${encodeURIComponent('Data')}&t=${new Date().getTime()}`);
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=${encodeURIComponent('Costing_List')}&t=${new Date().getTime()}`);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                 const dataRows = await response.json();
@@ -1518,7 +1518,7 @@
                     return {
                         id: getVal(['requestidcnumber', 'cnumber', 'id', 'requestid', 'c_number']) || '-',
                         c_number: getVal(['requestidcnumber', 'cnumber', 'id', 'requestid', 'c_number']) || '-',
-                        reference: getVal(['title', 'reference', 'ref', 'stylename', 'style']) || '-',
+                        reference: getVal(['title', 'reference', 'ref', 'stylename', 'style', 'customerref']) || '-',
                         style: getVal(['style', 'stylename']) || '-',
                         Sample_Type:
                             sourceRow['Sample Type'] ||
@@ -1745,7 +1745,7 @@
             if (grid) grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px;">⏳ Loading calendar data from Data sheet...</div>';
             try {
                 // Fetching from the same URL as the table
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=${encodeURIComponent('Data')}&t=${new Date().getTime()}`);
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=${encodeURIComponent('Costing_List')}&t=${new Date().getTime()}`);
                 const data = await response.json();
                 if (data && !data.error) {
                     // Extract and normalize data rows just like loadRevisedTasks
@@ -1775,7 +1775,7 @@
                             id: getVal(['requestidcnumber', 'cnumber', 'id', 'requestid', 'c_number']) || '-',
                             c_number: getVal(['requestidcnumber', 'cnumber', 'id', 'requestid', 'c_number']) || '-',
                             customer: getVal(['customer', 'client']) || '-',
-                            reference: getVal(['title', 'reference', 'ref', 'stylename', 'style']) || '-',
+                            reference: getVal(['title', 'reference', 'ref', 'stylename', 'style', 'customerref']) || '-',
                             style: getVal(['style', 'stylename']) || '-',
                             Cus_Dept: getVal(['cusdept', 'customerdepartment', 'department']) || '-',
                             status: getVal(['status']) || 'Pending',
