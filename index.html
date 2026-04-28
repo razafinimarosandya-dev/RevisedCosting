@@ -1267,14 +1267,24 @@
             }
 
             if (encodedData) {
+                console.log('[SESSION] Encoded data detected in URL:', encodedData.substring(0, 10) + '...');
                 try {
                     const decodedData = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
+                    console.log('[SESSION] Decoded data object:', decodedData);
+                    
                     if (decodedData && (decodedData.loginId || decodedData.email || decodedData.user)) {
                         localStorage.setItem(REMEMBERED_USER_KEY, JSON.stringify(decodedData));
+                        console.log('[SESSION] Data persisted to localStorage under key:', REMEMBERED_USER_KEY);
                         window.history.replaceState(null, null, window.location.pathname);
                         return true;
+                    } else {
+                        console.warn('[SESSION] Decoded data is missing identifying fields (loginId/email)');
                     }
-                } catch (e) { console.error('Session handoff failed:', e); }
+                } catch (e) { 
+                    console.error('[SESSION] Critical failure during handoff / decoding:', e); 
+                }
+            } else {
+                console.log('[SESSION] No session data found in URL (hash or query)');
             }
             return false;
         }
@@ -1292,14 +1302,23 @@
             if (!userAvatar || !profileTrigger || !userDropdown) return;
 
             const storedData = localStorage.getItem(REMEMBERED_USER_KEY);
+            console.log('[SESSION] Current localStorage data:', storedData);
+
             let sessionData = null;
-            try { sessionData = JSON.parse(storedData || 'null'); } catch(e) { console.error('JSON parse error session:', e); }
+            try { 
+                sessionData = JSON.parse(storedData || 'null'); 
+            } catch(e) { 
+                console.error('[SESSION] JSON parse error on stored data:', e); 
+            }
             
             if (sessionData) {
+                console.log('[SESSION] Session data loaded:', sessionData);
                 // Extended fallback mapping to handle varied JSON structures from different sources
                 const name = sessionData.username || sessionData.name || sessionData.loginId || sessionData.loginID || (sessionData.user && (sessionData.user.name || sessionData.user.username)) || 'User';
                 const email = sessionData.email || sessionData.loginId || sessionData.loginID || (sessionData.user && sessionData.user.email) || 'No email provided';
                 
+                console.log('[SESSION] Resulting profile - Name:', name, 'Email:', email);
+
                 // Update UI Display
                 if (dropdownName) dropdownName.textContent = name;
                 if (dropdownEmail) dropdownEmail.textContent = email;
@@ -1308,6 +1327,7 @@
                 userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff&bold=true`;
                 userAvatar.alt = name;
             } else {
+                console.warn('[SESSION] No session data found. User appears not connected.');
                 if (dropdownEmail) dropdownEmail.textContent = 'Not connected';
                 if (dropdownName) dropdownName.textContent = 'Welcome';
             }
