@@ -508,17 +508,129 @@
     }
 
 
-    .status-indicator {
-        padding: 4px 10px;
-        border-radius: 99px;
-        font-size: 12px;
-        font-weight: 700;
-        display: inline-flex;
-        align-items: center;
+    /* Redesigned Modal/Details (Meeting Style) */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .detail-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
         gap: 4px;
-        background-color: #eff6ff;
-        color: #2563eb;
-        border: 1px solid #bfdbfe;
+        transition: all 0.2s;
+    }
+
+    .detail-card:hover {
+        border-color: #cbd5e1;
+        background: #f1f5f9;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .detail-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: capitalize;
+        letter-spacing: 0.01em;
+        margin-bottom: 2px;
+    }
+
+    .detail-value {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1e293b;
+        word-break: break-word;
+    }
+
+    /* Modal System Override */
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(4px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        padding: 20px;
+    }
+
+    .modal-window {
+        background: white;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 850px;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        animation: modalSlide 0.3s ease-out;
+        overflow: hidden;
+    }
+
+    @keyframes modalSlide {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+    }
+
+    .modal-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .modal-close {
+        background: #f1f5f9;
+        border: none;
+        color: #64748b;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 20px;
+        transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+        background: #fee2e2;
+        color: #ef4444;
+    }
+
+    .modal-body {
+        padding: 24px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid #f1f5f9;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        background: #f8fafc;
     }
 </style>
 
@@ -753,47 +865,36 @@
     </style>
 
     <!-- Calendar Day Requests Modal -->
-    <div class="modal" id="calendar-day-modal"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
-        <div class="card"
-            style="width: 400px; padding: 24px; background: white; border-radius: 8px; max-height: 80vh; overflow-y: auto;">
-            <h3 id="calendar-day-title"
-                style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; font-weight: 700;">
-                Requests for Date</h3>
-            <div id="calendar-day-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 24px;">
-                <!-- Populated via JS -->
-            </div>
-            <div style="display: flex; justify-content: flex-end;">
-                <button class="btn-outline-blue" id="close-calendar-day-btn"
-                    style="padding: 8px 16px; background:white; border:1px solid #e2e8f0; border-radius:8px; cursor:pointer; font-weight: 600;">Close</button>
-            </div>
+    <div class="modal-backdrop" id="calendar-day-modal">
+      <div class="modal-window" style="max-width: 500px;">
+        <div class="modal-header">
+           <h3 class="modal-title" id="calendar-day-title">Requests for Date</h3>
+           <button class="modal-close" id="close-calendar-day-btn">&times;</button>
         </div>
+        <div class="modal-body" id="calendar-day-content">
+          <!-- Populated via JS -->
+        </div>
+      </div>
     </div>
 
     <!-- Details Modal -->
-    <div class="modal" id="details-modal"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
-        <div class="card animate-fade-in"
-            style="width: 920px; max-width: 96vw; padding: 24px; background: white; border-radius: 12px; max-height: 90vh; overflow-y: auto; border: none; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); display: flex; flex-direction: column;">
-            <div style="margin-bottom: 24px; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="font-size: 20px; font-weight: 700; color: #111827;">Request Details</h3>
-                <button id="close-details-btn-x" style="background: none; border: none; cursor: pointer; color: #64748b;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-            <div id="details-content" style="line-height: 1.6; font-size: 14px; margin-bottom: 32px;">
-                <!-- Populated via JS -->
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 12px;">
-                <button class="btn btn-primary" id="btn-submit-revision"
-                    style="padding: 10px 28px; border-radius: 8px; font-weight: 600; background: #10b981; border: none; color: white;">Revised</button>
-                <button class="btn btn-secondary" id="close-details-btn"
-                    style="padding: 10px 28px; border-radius: 8px; font-weight: 600;">Close</button>
-            </div>
+    <div class="modal-backdrop" id="details-modal">
+      <div class="modal-window">
+        <div class="modal-header">
+           <h3 class="modal-title">Request Details</h3>
+           <button class="modal-close" id="close-details-btn-x">&times;</button>
         </div>
+        <div class="modal-body" id="details-content">
+          <!-- Populated via JS -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="close-details-btn">Close</button>
+            <button class="btn btn-primary" id="btn-submit-revision" style="background: #10b981; min-width: 140px;">
+                <i data-feather="refresh-cw" style="width: 16px; margin-right: 8px;"></i>
+                Revised
+            </button>
+        </div>
+      </div>
     </div>
 
     <!-- Revision Entry Modal (Custom Design matching Photo) -->
@@ -1946,7 +2047,306 @@
             if (leftCompleted) leftCompleted.textContent = completed;
         }
 
-        // --- NAVIGATION & CALENDAR LOGIC ---
+        // --- NAVIGATION & CALENDAR
+        function renderFabricDetails(row, targetContainer) {
+            if (!targetContainer) return;
+            targetContainer.innerHTML = '';
+
+            const rawAddOns = row['Fabric Add Ons'] || row.Fabric_Add_Ons || row.fabric_add_ons || '';
+            let fabricRows = [];
+
+            if (rawAddOns && String(rawAddOns).startsWith('[')) {
+                try { fabricRows = JSON.parse(rawAddOns); } 
+                catch (e) { console.error("Fabric JSON parse error", e); }
+            }
+
+            if (!Array.isArray(fabricRows) || fabricRows.length === 0) {
+                targetContainer.innerHTML = '<div style="color: var(--text-muted); font-style: italic; font-size: 12px; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; margin-bottom: 24px;">No fabric details available</div>';
+                return;
+            }
+
+            const columns = [
+                { key: "opt", label: "OPT", width: "45px" },
+                { key: "type", label: "Type", width: "" },
+                { key: "fabric", label: "Fabric Name", width: "" },
+                { key: "gms", label: "GMS", width: "70px" },
+                { key: "composition", label: "Composition", width: "" },
+                { key: "width", label: "Width", width: "70px" },
+                { key: "header", label: "Header", width: "" }
+            ];
+
+            const activeCols = columns.filter(col => {
+                if (col.key === 'opt' || col.key === 'fabric') return true;
+                return fabricRows.some(r => r[col.key] && String(r[col.key]).trim() !== '' && String(r[col.key]).trim() !== '-');
+            });
+
+            targetContainer.innerHTML = `
+                <div class="fabric-table-wrap" style="margin-top: 16px;">
+                    <div style="font-size: 11px; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 8px;">Fabric Details</div>
+                    <div style="overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px; background: white;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 600px;">
+                            <thead>
+                                <tr style="background: #f8fafc;">${activeCols.map(col => `<th style="padding: 10px 12px; font-size: 11px; font-weight: 700; color: #475569; border-bottom: 2px solid #e2e8f0; text-transform: uppercase; ${col.width ? `width: ${col.width};` : ''}">${col.label}</th>`).join('')}</tr>
+                            </thead>
+                            <tbody>
+                                ${fabricRows.map((item, idx) => `
+                                    <tr>
+                                        ${activeCols.map(col => {
+                                            let val = item[col.key] || (col.key === 'opt' ? String.fromCharCode(65 + idx) : '-');
+                                            if (col.key === 'opt') return `<td style="padding: 10px 12px; border-bottom: 1px solid #f1f5f9;"><div class="fabric-opt-chip">${val}</div></td>`;
+                                            return `<td style="padding: 10px 12px; font-size: 13px; color: #1e293b; border-bottom: 1px solid #f1f5f9; ${col.key === 'fabric' ? 'font-weight: 600;' : ''}">${val}</td>`;
+                                        }).join('')}
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function fetchCalendarData() {
+            if (allTasks && allTasks.length > 0) {
+                requestsRows = allTasks;
+                calendarLoaded = true;
+                renderCalendar();
+                return;
+            }
+
+            const grid = document.getElementById("calendar-grid");
+            if (grid) grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px;">⏳ Loading calendar data...</div>';
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=${encodeURIComponent('Costing_List')}&t=${new Date().getTime()}`);
+                const data = await response.json();
+                if (data && !data.error) {
+                    requestsRows = data;
+                    calendarLoaded = true;
+                    renderCalendar();
+                } else if (grid) {
+                    grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: red;">Error: ${data.error || 'Unknown error'}</div>`;
+                }
+            } catch (err) {
+                if (grid) grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: red;">Failed to fetch: ${err.message}</div>`;
+            }
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const year = calCurrentDate.getFullYear();
+            const month = calCurrentDate.getMonth();
+
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const titleEl = document.getElementById('cal-month-title');
+            if (titleEl) titleEl.textContent = `${monthNames[month]} ${year}`;
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            let dayCounts = {};
+            requestsRows.forEach(row => {
+                const dateRaw = row.Created || row.createdDate || row.Requested_Date || row.requestedDate;
+                const d = globalParseSheetDate(dateRaw);
+                if (d && !isNaN(d) && d.getFullYear() === year && d.getMonth() === month) {
+                    let day = d.getDate();
+                    dayCounts[day] = (dayCounts[day] || 0) + 1;
+                }
+            });
+
+            for (let x = 0; x < firstDayIndex; x++) {
+                grid.appendChild(document.createElement('div'));
+            }
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                let dayCell = document.createElement('div');
+                dayCell.style.border = '1px solid #e2e8f0';
+                dayCell.style.borderRadius = '8px';
+                dayCell.style.padding = '8px';
+                dayCell.style.display = 'flex';
+                dayCell.style.flexDirection = 'column';
+                dayCell.style.backgroundColor = '#ffffff';
+
+                dayCell.innerHTML = `<strong>${i}</strong>`;
+
+                if (dayCounts[i]) {
+                    let badge = document.createElement('div');
+                    badge.className = 'calendar-badge';
+                    badge.style.marginTop = 'auto';
+                    badge.style.background = 'var(--primary)';
+                    badge.style.color = '#fff';
+                    badge.style.padding = '4px 8px';
+                    badge.style.borderRadius = '6px';
+                    badge.style.fontSize = '11px';
+                    badge.style.fontWeight = '700';
+                    badge.style.textAlign = 'center';
+                    badge.style.cursor = 'pointer';
+                    badge.textContent = `${dayCounts[i]} Request${dayCounts[i] > 1 ? 's' : ''}`;
+                    
+                    badge.onclick = () => {
+                        const dailyReqs = requestsRows.filter(r => {
+                            const d = globalParseSheetDate(r.Created || r.createdDate || r.Requested_Date || r.requestedDate);
+                            return d && d.getFullYear() === year && d.getMonth() === month && d.getDate() === i;
+                        });
+
+                        const modal = document.getElementById('calendar-day-modal');
+                        const content = document.getElementById('calendar-day-content');
+                        if (modal && content) {
+                            document.getElementById('calendar-day-title').textContent = `Requests on ${monthNames[month]} ${i}, ${year}`;
+                            content.innerHTML = dailyReqs.map(r => `
+                                <div style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                                   <div>
+                                       <div style="font-weight: 700; color: #1e293b;">${r.id || r.C_Number || r.Cnumber || '-'}</div>
+                                       <div style="font-size: 12px; color: #64748b;">${r.customer || r.Customer || '-'}</div>
+                                   </div>
+                                   <button class="btn btn-outline" style="padding: 4px 10px; font-size: 11px;" onclick="viewTask('${r.id || r.C_Number || r.Cnumber}', true)">Details</button>
+                                </div>
+                             `).join('');
+                            modal.style.display = 'flex';
+                        }
+                    };
+                    dayCell.appendChild(badge);
+                }
+                grid.appendChild(dayCell);
+            }
+        }
+
+        function viewTask(id, canRevise = true) {
+            // Close any open day modals
+            document.getElementById('calendar-day-modal').style.display = 'none';
+
+            activeTaskId = id;
+            const task = allTasks.find(t => String(t.id) === String(id) || String(t.C_Number) === String(id)) || 
+                         requestsRows.find(r => String(r.id) === String(id) || String(r.C_Number) === String(id) || String(r.Cnumber) === String(id));
+            
+            if (!task) {
+                console.error("Task not found for ID:", id);
+                return;
+            }
+
+            const rowData = { ...(task.raw || {}), ...task };
+            const content = document.getElementById('details-content');
+            content.innerHTML = '';
+
+            // 1. Grid of General Info
+            const gridContainer = document.createElement('div');
+            gridContainer.className = 'form-grid';
+
+            const excludeKeys = [
+                '_rowindex', 'raw', 'powerappsid', 'powerappsid__', 'statusclass', 'avatar', 'id', 'c_number', 'cnumber',
+                'fabricaddons', 'attachmenturl', 'folderpath', 'attachments', 'attachment', 'status',
+                'pl_mail', 'acc_email', 'meeting_notes_brainstorming', 'fabric_origin_source',
+                'pl_name', 'acc_name', 'pm_name', 'cads_name', 'style', 'folderlink',
+                'req_remarks', 'techpack_remarks', 'pattern_remarks', 'reverse_remarks', 'conso_remarks', 'lateness_remarks'
+            ].map(k => k.toLowerCase().replace(/[^a-z]/g, ''));
+
+            const displayedLabels = new Set();
+            Object.entries(rowData).forEach(([key, val]) => {
+                const normKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+                if (excludeKeys.includes(normKey)) return;
+
+                let label = key.replace(/_/g, ' ').trim();
+                const labelKey = label.toLowerCase().replace(/[^a-z0-9]/g, '');
+                if (displayedLabels.has(labelKey)) return;
+
+                const strVal = String(val || "").trim();
+                if (strVal === "" || strVal === "N/A" || strVal === "-" || strVal.toLowerCase() === "undefined" || strVal.toLowerCase() === "null") return;
+
+                let displayValue = val;
+                if (key.toLowerCase().includes('date') || key.toLowerCase().includes('created') || key.toLowerCase().includes('expected')) {
+                    displayValue = formatDateOnly(val);
+                }
+
+                if (labelKey === 'customerref') label = 'Customer Ref';
+                if (labelKey === 'cusdept') label = 'Department';
+
+                const card = document.createElement('div');
+                card.className = 'detail-card';
+                card.innerHTML = `<span class="detail-label">${label}</span><div class="detail-value">${displayValue}</div>`;
+                gridContainer.appendChild(card);
+                displayedLabels.add(labelKey);
+            });
+            content.appendChild(gridContainer);
+
+            // 2. Remarks Section
+            const remarksFields = [
+                { key: 'Req_Remarks', label: 'Request Remarks' },
+                { key: 'Techpack_Remarks', label: 'Techpack Remarks' },
+                { key: 'Pattern_Remarks', label: 'Pattern Remarks' },
+                { key: 'Reverse_Remarks', label: 'Revert Remarks' },
+                { key: 'Conso_Remarks', label: 'Conso Remarks' },
+                { key: 'Lateness_Remarks', label: 'Lateness Remarks' }
+            ];
+
+            remarksFields.forEach(rem => {
+                const val = rowData[rem.key] || rowData[rem.key.toLowerCase()];
+                const strVal = String(val || "").trim();
+                if (strVal && strVal !== "-" && strVal !== "N/A" && strVal.toLowerCase() !== "null") {
+                    const remCard = document.createElement('div');
+                    remCard.className = 'detail-card';
+                    remCard.style.gridColumn = "1 / -1";
+                    remCard.style.width = "100%";
+                    remCard.style.marginTop = "8px";
+                    remCard.style.background = "#fff";
+                    remCard.style.borderLeft = "4px solid var(--primary)";
+                    remCard.innerHTML = `<span class="detail-label" style="color: var(--primary)">${rem.label}</span><div class="detail-value" style="font-weight: 500; white-space: pre-wrap;">${strVal}</div>`;
+                    content.appendChild(remCard);
+                }
+            });
+
+            // 3. Fabric Section
+            const fabricDiv = document.createElement('div');
+            content.appendChild(fabricDiv);
+            renderFabricDetails(rowData, fabricDiv);
+
+            // 4. Special Fields (Folder Path & Attachments)
+            const specialFields = [
+                { label: 'Folder Path', keys: ['folderpath', 'folderlink'], color: '#3b82f6', linkText: 'Open Folder' },
+                { label: 'Attachments', keys: ['attachments', 'attachment', 'attachmenturl'], color: '#10b981', linkText: 'View Attachment' }
+            ];
+
+            specialFields.forEach(spec => {
+                const foundKey = Object.keys(rowData).find(k => spec.keys.includes(k.toLowerCase().replace(/[^a-z]/g, '')));
+                if (foundKey) {
+                    const val = rowData[foundKey];
+                    const strVal = String(val || "").trim();
+                    if (strVal && strVal !== "-" && strVal !== "N/A" && strVal.toLowerCase() !== "none") {
+                        const card = document.createElement('div');
+                        card.className = "detail-card";
+                        card.style.gridColumn = "1 / -1";
+                        card.style.marginTop = "12px";
+                        card.style.background = "#fff";
+                        card.style.border = `1.5px solid ${spec.color}20`;
+                        
+                        let displayVal = strVal;
+                        if (strVal.toLowerCase().startsWith('http')) {
+                            displayVal = `<a href="${strVal}" target="_blank" style="color: ${spec.color}; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 22 3 22 10"></polyline><line x1="14" y1="11" x2="22" y2="3"></line></svg>
+                                ${spec.linkText}
+                            </a>`;
+                        }
+                        card.innerHTML = `<span class="detail-label" style="color: ${spec.color}">${spec.label}</span><div class="detail-value">${displayVal}</div>`;
+                        content.appendChild(card);
+                    }
+                }
+            });
+
+            // 5. Revised Button visibility
+            const btnRevised = document.getElementById('btn-submit-revision');
+            if (btnRevised) btnRevised.style.display = canRevise ? 'inline-flex' : 'none';
+
+            document.getElementById('details-modal').style.display = 'flex';
+        }
+
+        const formatDateOnly = (dateValue) => {
+            const parsed = globalParseSheetDate(dateValue);
+            if (!parsed) return dateValue || '-';
+            const mm = String(parsed.getMonth() + 1).padStart(2, '0');
+            const dd = String(parsed.getDate()).padStart(2, '0');
+            const yyyy = parsed.getFullYear();
+            return `${mm} - ${dd} - ${yyyy}`;
+        };
 
         function setupNavigation() {
             const navRevised = document.getElementById("nav-revised");
@@ -1991,223 +2391,21 @@
 
         const getNextRevisedId = (currentId) => {
             if (!currentId || currentId === '-') return '-';
-            
-            // Expected format: C26042801-01
             const parts = String(currentId).split('-');
             if (parts.length > 1) {
-                const suffix = parts[parts.length - 1]; // e.g. "01"
-                const base = parts.slice(0, -1).join('-'); // e.g. "C26042801"
-                
+                const suffix = parts[parts.length - 1];
+                const base = parts.slice(0, -1).join('-');
                 const num = parseInt(suffix, 10);
                 if (!isNaN(num)) {
-                    const nextNum = num + 1;
-                    return base + '-' + String(nextNum).padStart(2, '0');
+                    return base + '-' + String(num + 1).padStart(2, '0');
                 }
             }
-            
-            // If No Dash found or Suffix is not a number
             return currentId + '-02'; 
         };
 
-        const globalParseSheetDate = (dateStr) => {
-            if (!dateStr || String(dateStr).trim() === '-' || String(dateStr).trim() === '') return null;
-            
-            // Handle ISO already
-            if (String(dateStr).includes('T')) {
-                let d = new Date(dateStr);
-                if (!isNaN(d)) return d;
-            }
-
-            let parts = String(dateStr).trim().split(' ');
-            let datePart = parts[0];
-            let timePart = parts[1] || '00:00:00';
-            
-            if (datePart.includes('/')) {
-                let pts = datePart.split('/');
-                if (pts.length === 3) {
-                    // Normalize YYYY
-                    let yr = pts[2].length === 2 ? '20' + pts[2] : pts[2];
-                    // Common DD/MM/YYYY
-                    let d = new Date(`${yr}-${pts[1]}-${pts[0]}T${timePart}`);
-                    if (isNaN(d)) {
-                         // Try MM/DD/YYYY
-                         d = new Date(`${yr}-${pts[0]}-${pts[1]}T${timePart}`);
-                    }
-                    if (!isNaN(d)) return d;
-                }
-            }
-            
-            let fallback = new Date(dateStr);
-            return isNaN(fallback) ? null : fallback;
-        };
-
-        async function fetchCalendarData() {
-            // OPTIMIZATION: If we already have tasks from the table, use them instead of refetching
-            if (allTasks && allTasks.length > 0) {
-                console.log("Using cached tasks for calendar...");
-                requestsRows = allTasks;
-                calendarLoaded = true;
-                renderCalendar();
-                return;
-            }
-
-            const grid = document.getElementById("calendar-grid");
-            if (grid) grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px;">⏳ Loading calendar data from Data sheet...</div>';
-            try {
-                // Fetching from the same URL as the table
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=${encodeURIComponent('Costing_List')}&t=${new Date().getTime()}`);
-                const data = await response.json();
-                if (data && !data.error) {
-                    // Extract and normalize data rows just like loadRevisedTasks
-                    const rawRows = (Array.isArray(data) ? data : []);
-                    requestsRows = rawRows.map(row => {
-                        const sourceRow = (row && typeof row.raw === 'object' && row.raw !== null)
-                            ? { ...row, ...row.raw }
-                            : row;
-
-                        const cleanRow = {};
-                        Object.keys(sourceRow).forEach(key => {
-                            const normalized = key.toLowerCase().replace(/[^a-z0-9]/g, '');
-                            cleanRow[normalized] = sourceRow[key];
-                        });
-
-                        const getVal = (possibleKeys) => {
-                            for (let k of possibleKeys) {
-                                const searchKey = k.toLowerCase().replace(/[^a-z0-9]/g, '');
-                                const val = cleanRow[searchKey];
-                                if (val !== undefined && val !== null && String(val).trim() !== '') return val;
-                            }
-                            return null;
-                        };
-
-                        return {
-                            ...sourceRow,
-                            id: getVal(['requestidcnumber', 'cnumber', 'id', 'requestid', 'c_number']) || '-',
-                            c_number: getVal(['requestidcnumber', 'cnumber', 'id', 'requestid', 'c_number']) || '-',
-                            customer: getVal(['customer', 'client']) || '-',
-                            reference: getVal(['title', 'reference', 'ref', 'stylename', 'style', 'customerref']) || '-',
-                            style: getVal(['style', 'stylename']) || '-',
-                            Cus_Dept: getVal(['cusdept', 'customerdepartment', 'department']) || '-',
-                            status: getVal(['status']) || 'Pending',
-                            raw: sourceRow
-                        };
-                    });
-                    calendarLoaded = true;
-                    renderCalendar();
-                } else {
-                    if (grid) grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: red;">Error: ${data.error || 'Unknown error'}</div>`;
-                }
-            } catch (err) {
-                if (grid) grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: red;">Failed to fetch: ${err.message}</div>`;
-            }
+        function initDatalists() {
+            // Placeholder for datalist logic if needed
         }
-
-        function renderCalendar() {
-            const grid = document.getElementById('calendar-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
-
-            const year = calCurrentDate.getFullYear();
-            const month = calCurrentDate.getMonth();
-
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            document.getElementById('cal-month-title').textContent = `${monthNames[month]} ${year}`;
-
-            const firstDayIndex = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            let dayCounts = {};
-            let monthTotal = 0;
-            requestsRows.forEach(row => {
-                const dateRaw = row.Created || row.createdDate || row.Requested_Date || row.requestedDate;
-                const d = globalParseSheetDate(dateRaw);
-                if (d && !isNaN(d)) {
-                    if (d.getFullYear() === year && d.getMonth() === month) {
-                        let day = d.getDate();
-                        dayCounts[day] = (dayCounts[day] || 0) + 1;
-                        monthTotal++;
-                    }
-                }
-            });
-
-            const totalEl = document.getElementById('cal-total-requests');
-            if (totalEl) {
-                totalEl.textContent = `Total this month: ${monthTotal} | Overall: ${requestsRows.length}`;
-            }
-
-            for (let x = 0; x < firstDayIndex; x++) {
-                let emptyCell = document.createElement('div');
-                emptyCell.style.background = '#f8fafc';
-                emptyCell.style.borderRadius = '6px';
-                grid.appendChild(emptyCell);
-            }
-
-            for (let i = 1; i <= daysInMonth; i++) {
-                let dayCell = document.createElement('div');
-                dayCell.style.border = '1px solid #e2e8f0';
-                dayCell.style.borderRadius = '8px';
-                dayCell.style.padding = '8px';
-                dayCell.style.display = 'flex';
-                dayCell.style.flexDirection = 'column';
-                dayCell.style.backgroundColor = '#ffffff';
-
-                let dateNumber = document.createElement('strong');
-                dateNumber.style.color = '#334155';
-                dateNumber.textContent = i;
-                dayCell.appendChild(dateNumber);
-
-                if (dayCounts[i]) {
-                    let countBadge = document.createElement('div');
-                    countBadge.style.marginTop = 'auto';
-                    countBadge.style.backgroundColor = 'var(--primary)';
-                    countBadge.style.color = '#fff';
-                    countBadge.style.padding = '4px 8px';
-                    countBadge.style.borderRadius = '6px';
-                    countBadge.style.fontSize = '11px';
-                    countBadge.style.fontWeight = '700';
-                    countBadge.style.textAlign = 'center';
-                    countBadge.style.cursor = 'pointer';
-                    countBadge.textContent = `${dayCounts[i]} Request${dayCounts[i] > 1 ? 's' : ''}`;
-
-                    countBadge.addEventListener('mouseenter', () => countBadge.style.opacity = '0.8');
-                    countBadge.addEventListener('mouseleave', () => countBadge.style.opacity = '1');
-
-                    countBadge.addEventListener('click', () => {
-                        const dailyReqs = requestsRows.filter(r => {
-                            const dateRaw = r.Created || r.createdDate || r.Requested_Date || r.requestedDate;
-                            const rd = globalParseSheetDate(dateRaw);
-                            return rd && !isNaN(rd) && rd.getFullYear() === year && rd.getMonth() === month && rd.getDate() === i;
-                        });
-
-                        const modal = document.getElementById('calendar-day-modal');
-                        const title = document.getElementById('calendar-day-title');
-                        const content = document.getElementById('calendar-day-content');
-
-                        if (modal && title && content) {
-                            title.textContent = `Requests on ${monthNames[month]} ${i}, ${year}`;
-
-                            content.innerHTML = dailyReqs.map(r => {
-                                const displayId = r.id !== '-' ? r.id : (r.C_Number || 'Unknown');
-                                const customer = r.customer !== '-' ? r.customer : (r.Customer || 'No Customer');
-                                return `
-                                <div style="padding: 12px 0; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-                                   <div style="display:flex; flex-direction: column;">
-                                       <span style="font-weight: 700; color: #1e293b;">${displayId}</span>
-                                       <span style="font-size: 12px; color: #64748b;">${customer}</span>
-                                   </div>
-                                   <button class="btn-outline-blue" onclick="viewTask('${displayId}', false)" style="padding: 4px 10px; font-size: 11px;">View Details</button>
-                                </div>
-                             `}).join('');
-                            modal.style.display = 'flex';
-                        }
-                    });
-                    dayCell.appendChild(countBadge);
-                }
-                grid.appendChild(dayCell);
-            }
-        }
-
-
     </script>
 </body>
 </html>
