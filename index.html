@@ -2105,6 +2105,28 @@
             `;
         }
 
+        const globalParseSheetDate = (dateStr) => {
+            if (!dateStr || String(dateStr).trim() === '-' || String(dateStr).trim() === '') return null;
+            if (String(dateStr).includes('T')) {
+                let d = new Date(dateStr);
+                if (!isNaN(d)) return d;
+            }
+            let parts = String(dateStr).trim().split(' ');
+            let datePart = parts[0];
+            let timePart = parts[1] || '00:00:00';
+            if (datePart.includes('/')) {
+                let pts = datePart.split('/');
+                if (pts.length === 3) {
+                    let yr = pts[2].length === 2 ? '20' + pts[2] : pts[2];
+                    let d = new Date(`${yr}-${pts[1]}-${pts[0]}T${timePart}`);
+                    if (isNaN(d)) d = new Date(`${yr}-${pts[0]}-${pts[1]}T${timePart}`);
+                    if (!isNaN(d)) return d;
+                }
+            }
+            let fallback = new Date(dateStr);
+            return isNaN(fallback) ? null : fallback;
+        };
+
         async function fetchCalendarData() {
             if (allTasks && allTasks.length > 0) {
                 requestsRows = allTasks;
