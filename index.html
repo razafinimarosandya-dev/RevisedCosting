@@ -420,6 +420,44 @@
     .btn-outline-blue:hover {
         background-color: #eff6ff;
     }
+    
+    .fabric-opt-chip {
+        border: 1px solid #bfdbfe;
+        background: #eff6ff;
+        color: #1d4ed8;
+        border-radius: 6px;
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+
+    .fabric-row-remove-btn {
+        border: 1px solid #fecaca;
+        background: #fff1f2;
+        color: #dc2626;
+        border-radius: 6px;
+        width: 24px;
+        height: 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-weight: 700;
+        line-height: 1;
+    }
+    
+    .fabric-table td input,
+    .fabric-table td select {
+        width: 100%;
+        padding: 0.5rem 0.6rem;
+        font-size: 0.85rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        outline: none;
+    }
 
     .status-indicator {
         padding: 4px 10px;
@@ -802,34 +840,40 @@
                     </div>
                 </div>
 
-                <!-- Step 2: Main Fabric (matching Step 1 style) -->
+                <!-- Step 2: Main Fabric (matching Request 2.html) -->
                 <div id="rev-step-2" class="step-content" style="display: none;">
                     <div style="background: #f1f5f9; padding: 32px; border-radius: 16px; margin-bottom: 32px;">
-                        <label class="form-label-photo" style="margin-bottom: 16px;">Fabric Origin Source</label>
-                        <div style="display: flex; gap: 12px;">
-                            <button type="button" id="origin-cdl" class="origin-toggle active"
-                                style="flex: 1; padding: 16px; border-radius: 12px; border: 1.5px solid #e2e8f0; background: white; font-weight: 700; cursor: pointer;">CDL</button>
-                            <button type="button" id="origin-external" class="origin-toggle"
-                                style="flex: 1; padding: 16px; border-radius: 12px; border: 1.5px solid #e2e8f0; background: white; font-weight: 700; cursor: pointer;">External</button>
+                        <div class="input-group mb-4" style="margin-bottom: 16px;">
+                            <label class="form-label-photo">Fabric Origin Source Type <span style="color: #ef4444;">*</span></label>
+                            <select id="fabric-type-select" class="form-input-photo" required>
+                                <option value="">Select type...</option>
+                                <option value="CDL">CDL</option>
+                                <option value="External">External</option>
+                            </select>
                         </div>
-                    </div>
-                    <div id="fabric-cdl-fields" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                        <div class="input-group">
-                            <label class="form-label-photo">Select CDL Fabric</label>
-                            <input type="text" id="rev-cdl-fabric" class="form-input-photo"
-                                placeholder="Search CDL fabric...">
-                        </div>
-                        <div class="input-group">
-                            <label class="form-label-photo">Fabric Header</label>
-                            <input type="text" id="rev-header" class="form-input-photo" placeholder="Header code...">
-                        </div>
-                    </div>
-                    <div id="fabric-external-fields" style="display: none;">
-                        <div class="input-group">
-                            <label class="form-label-photo">External fabric detail</label>
-                            <textarea id="rev-external-detail" class="form-input-photo"
-                                style="height: 140px; resize: none;"
-                                placeholder="Enter external fabric details..."></textarea>
+    
+                        <div id="fabric-addons-section" style="display:none;">
+                            <div class="input-group mb-4" style="margin-bottom: 16px;">
+                                <button type="button" id="add-fabric-row-btn" class="btn-outline-blue">+ Add Ons</button>
+                            </div>
+    
+                            <div class="fabric-table-wrapper" style="width: 100%; overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff;">
+                                <table class="fabric-table" style="width: 100%; border-collapse: collapse; min-width: 760px;">
+                                    <thead>
+                                        <tr>
+                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">opt</th>
+                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">Type</th>
+                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">Fabric</th>
+                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">Header</th>
+                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">GMs</th>
+                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">Composition</th>
+                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">Width</th>
+                                            <th style="font-size: 0.8rem; color: #64748b; background: #f8fafc; font-weight: 600; padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="fabric-table-body"></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1025,31 +1069,14 @@
                 e.preventDefault();
                 saveEditedRevision();
             });
+
+            // Initialize dynamic table logic for Step 2
+            setupFabricAddOnsTable();
         });
 
         let currentStep = 1;
 
         function initWizardListeners() {
-            // Fabric Origin Toggles
-            const btnCdl = document.getElementById('origin-cdl');
-            const btnExt = document.getElementById('origin-external');
-            const cdlFields = document.getElementById('fabric-cdl-fields');
-            const extFields = document.getElementById('fabric-external-fields');
-
-            btnCdl?.addEventListener('click', () => {
-                btnCdl.classList.add('active');
-                btnExt.classList.remove('active');
-                cdlFields.style.display = 'grid';
-                extFields.style.display = 'none';
-            });
-
-            btnExt?.addEventListener('click', () => {
-                btnExt.classList.add('active');
-                btnCdl.classList.remove('active');
-                extFields.style.display = 'block';
-                cdlFields.style.display = 'none';
-            });
-
             // Navigation
             document.getElementById('btn-next')?.addEventListener('click', () => {
                 if (currentStep < 3) goToStep(currentStep + 1);
@@ -1330,9 +1357,6 @@
             document.getElementById('rev-ready-date').value = '';
             document.getElementById('rev-block').value = '';
             document.getElementById('rev-remark').value = '';
-            document.getElementById('rev-cdl-fabric').value = '';
-            document.getElementById('rev-header').value = '';
-            document.getElementById('rev-external-detail').value = '';
             
             // Set Badge
             document.getElementById('rev-id-badge-val').textContent = newId;
@@ -1359,12 +1383,160 @@
             });
 
             // Step 2 Population
-            document.getElementById('rev-cdl-fabric').value = task.Main_Fabric || '';
-            document.getElementById('rev-header').value = task.Fabric_Header || '';
+            document.getElementById('fabric-type-select').value = getFromSource(['fabric_origin_source', 'fabric origin source'], 'CDL');
+            
+            // Re-initialize dynamic table logic for Step 2
+            setupFabricAddOnsTable();
+            
+            // Attempt to pre-fill rows if data exists
+            const existingFabric = getFromSource(['fabric_add_ons', 'fabric add ons', 'fabricaddons'], '');
+            if (existingFabric) {
+                try {
+                    const parsed = JSON.parse(existingFabric);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        const tableBody = document.getElementById("fabric-table-body");
+                        tableBody.innerHTML = ''; // clear default row
+                        
+                        const maxFabricRows = 7;
+                        const optLabels = ["A", "B", "C", "D", "E", "F", "G"];
+                        const createTypeOptions = (selectedValue = "") => {
+                            return `
+                                <option value="">Select...</option>
+                                <option value="CDL" ${selectedValue === "CDL" ? "selected" : ""}>CDL</option>
+                                <option value="External" ${selectedValue === "External" ? "selected" : ""}>External</option>
+                            `;
+                        };
+                        
+                        parsed.forEach((item, idx) => {
+                             if(idx >= maxFabricRows) return;
+                             const row = document.createElement("tr");
+                             row.innerHTML = `
+                                <td><span class="fabric-opt-chip">${item.opt || optLabels[idx] || ''}</span></td>
+                                <td><select class="fabric-row-type" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px;">${createTypeOptions(item.type || '')}</select></td>
+                                <td><input type="text" class="fabric-row-fabric" value="${item.fabric || ''}" placeholder="Fabric" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
+                                <td><input type="text" class="fabric-row-header" value="${item.header || ''}" placeholder="Header" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
+                                <td><input type="text" class="fabric-row-gms" value="${item.gms || ''}" placeholder="GMs" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
+                                <td><input type="text" class="fabric-row-composition" value="${item.composition || ''}" placeholder="Composition" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
+                                <td><input type="text" class="fabric-row-width" value="${item.width || ''}" placeholder="Width" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
+                                <td><button type="button" class="fabric-row-remove-btn" title="Remove row">x</button></td>
+                            `;
+                            const removeBtn = row.querySelector(".fabric-row-remove-btn");
+                            if (removeBtn) {
+                                removeBtn.addEventListener("click", () => {
+                                    row.remove();
+                                    const rows = tableBody.querySelectorAll("tr");
+                                    rows.forEach((r, i) => {
+                                        const chip = r.querySelector(".fabric-opt-chip");
+                                        if (chip) chip.textContent = optLabels[i] || "";
+                                    });
+                                    document.getElementById("add-fabric-row-btn").disabled = rows.length >= maxFabricRows;
+                                });
+                            }
+                            tableBody.appendChild(row);
+                        });
+                        document.getElementById("add-fabric-row-btn").disabled = tableBody.querySelectorAll("tr").length >= maxFabricRows;
+                    }
+                } catch(e) {
+                    console.warn("Failed to parse fabric addons for pre-fill", e);
+                }
+            }
 
             // Switch Modals
             closeModal(); // Hide detail modal
             document.getElementById('revision-entry-modal').style.display = 'flex';
+        }
+
+        function collectFabricRows() {
+            const tableBody = document.getElementById("fabric-table-body");
+            if (!tableBody) return [];
+            const rows = Array.from(tableBody.querySelectorAll("tr"));
+            return rows
+                .map((row) => ({
+                    type: row.querySelector(".fabric-row-type")?.value?.trim() || "",
+                    fabric: row.querySelector(".fabric-row-fabric")?.value?.trim() || "",
+                    header: row.querySelector(".fabric-row-header")?.value?.trim() || "",
+                    gms: row.querySelector(".fabric-row-gms")?.value?.trim() || "",
+                    composition: row.querySelector(".fabric-row-composition")?.value?.trim() || "",
+                    width: row.querySelector(".fabric-row-width")?.value?.trim() || ""
+                }))
+                .filter((item) => item.type || item.fabric || item.header || item.gms || item.composition || item.width);
+        }
+
+        function setupFabricAddOnsTable() {
+            const tableBody = document.getElementById("fabric-table-body");
+            const addBtn = document.getElementById("add-fabric-row-btn");
+            const typeSelect = document.getElementById("fabric-type-select");
+            const section = document.getElementById("fabric-addons-section");
+            if (!tableBody || !addBtn || !typeSelect || !section) return;
+            const maxFabricRows = 7;
+            const optLabels = ["A", "B", "C", "D", "E", "F", "G"];
+
+            const createTypeOptions = (selectedValue = "") => {
+                return `
+                    <option value="">Select...</option>
+                    <option value="CDL" ${selectedValue === "CDL" ? "selected" : ""}>CDL</option>
+                    <option value="External" ${selectedValue === "External" ? "selected" : ""}>External</option>
+                `;
+            };
+
+            const refreshOptLabels = () => {
+                const rows = tableBody.querySelectorAll("tr");
+                rows.forEach((row, index) => {
+                    const chip = row.querySelector(".fabric-opt-chip");
+                    if (chip) chip.textContent = optLabels[index] || "";
+                });
+                addBtn.disabled = rows.length >= maxFabricRows;
+            };
+
+            const addRow = (prefillType = "") => {
+                if (tableBody.children.length >= maxFabricRows) {
+                    return;
+                }
+                const row = document.createElement("tr");
+                const rowType = prefillType || typeSelect.value || "";
+                const optLabel = optLabels[tableBody.children.length] || "";
+                row.innerHTML = `
+                    <td><span class="fabric-opt-chip">${optLabel}</span></td>
+                    <td><select class="fabric-row-type" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px;">${createTypeOptions(rowType)}</select></td>
+                    <td><input type="text" class="fabric-row-fabric" placeholder="Fabric" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
+                    <td><input type="text" class="fabric-row-header" placeholder="Header" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
+                    <td><input type="text" class="fabric-row-gms" placeholder="GMs" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
+                    <td><input type="text" class="fabric-row-composition" placeholder="Composition" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
+                    <td><input type="text" class="fabric-row-width" placeholder="Width" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
+                    <td><button type="button" class="fabric-row-remove-btn" title="Remove row">x</button></td>
+                `;
+                const removeBtn = row.querySelector(".fabric-row-remove-btn");
+                if (removeBtn) {
+                    removeBtn.addEventListener("click", () => {
+                        row.remove();
+                        refreshOptLabels();
+                    });
+                }
+                tableBody.appendChild(row);
+                refreshOptLabels();
+            };
+
+            addBtn.addEventListener("click", () => {
+                if (tableBody.children.length >= maxFabricRows) return;
+                addRow(typeSelect.value);
+            });
+            
+            typeSelect.addEventListener("change", () => {
+                section.style.display = typeSelect.value ? "block" : "none";
+                const rows = tableBody.querySelectorAll("tr");
+                rows.forEach((row) => {
+                    const rowTypeSelect = row.querySelector(".fabric-row-type");
+                    if (rowTypeSelect && !rowTypeSelect.value) {
+                        rowTypeSelect.value = typeSelect.value || "";
+                    }
+                });
+            });
+
+            // Initialize with default state
+            tableBody.innerHTML = '';
+            addRow();
+            refreshOptLabels();
+            section.style.display = typeSelect.value ? "block" : "none";
         }
 
         /**
@@ -1373,7 +1545,6 @@
         async function saveEditedRevision() {
             const newId = getNextRevisedId(activeTaskId);
 
-            const origin = document.getElementById('origin-cdl').classList.contains('active') ? 'CDL' : 'External';
             const selectedStatusInput = document.querySelector('input[name="rev-status-choice"]:checked');
             if (!selectedStatusInput) {
                 alert('Please choose a status in Step 3.');
@@ -1400,6 +1571,9 @@
                 </svg>
             `;
 
+            const fabricRows = collectFabricRows();
+            const fabricAddOnsJson = JSON.stringify(fabricRows);
+
             // Gather all fields from form
             const formData = {
                 action: 'create_revision',
@@ -1418,10 +1592,8 @@
                 Remarks: document.getElementById('rev-remark').value,
 
                 // Step 2
-                Fabric_Origin: origin,
-                Main_Fabric: origin === 'CDL' ? document.getElementById('rev-cdl-fabric').value : '',
-                Fabric_Header: origin === 'CDL' ? document.getElementById('rev-header').value : '',
-                External_Fabric_Detail: origin === 'External' ? document.getElementById('rev-external-detail').value : ''
+                Fabric_Origin_Source: document.getElementById('fabric-type-select').value || 'CDL',
+                Fabric_Add_Ons: fabricAddOnsJson
             };
 
             try {
