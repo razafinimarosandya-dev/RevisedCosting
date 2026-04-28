@@ -1088,13 +1088,17 @@
         }
 
         function goToStep(step) {
-            // Hide current
-            document.getElementById(`rev-step-${currentStep}`).style.display = 'none';
+            // Hide all steps securely
+            [1, 2, 3].forEach(s => {
+                const stepEl = document.getElementById(`rev-step-${s}`);
+                if (stepEl) stepEl.style.display = 'none';
+            });
 
             currentStep = step;
 
             // Show new
-            document.getElementById(`rev-step-${currentStep}`).style.display = 'block';
+            const currentEl = document.getElementById(`rev-step-${currentStep}`);
+            if (currentEl) currentEl.style.display = 'block';
 
             // Update Step Header based on Photo Design
             const stepTitles = {
@@ -1412,7 +1416,7 @@
                              const row = document.createElement("tr");
                              row.innerHTML = `
                                 <td><span class="fabric-opt-chip">${item.opt || optLabels[idx] || ''}</span></td>
-                                <td><select class="fabric-row-type" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px;">${createTypeOptions(item.type || '')}</select></td>
+                                <td><select class="fabric-row-type" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%; min-width: 100px;">${createTypeOptions(item.type || '')}</select></td>
                                 <td><input type="text" class="fabric-row-fabric" value="${item.fabric || ''}" placeholder="Fabric" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
                                 <td><input type="text" class="fabric-row-header" value="${item.header || ''}" placeholder="Header" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
                                 <td><input type="text" class="fabric-row-gms" value="${item.gms || ''}" placeholder="GMs" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
@@ -1462,6 +1466,8 @@
                 .filter((item) => item.type || item.fabric || item.header || item.gms || item.composition || item.width);
         }
 
+        let isFabricTableInitialized = false;
+
         function setupFabricAddOnsTable() {
             const tableBody = document.getElementById("fabric-table-body");
             const addBtn = document.getElementById("add-fabric-row-btn");
@@ -1497,7 +1503,7 @@
                 const optLabel = optLabels[tableBody.children.length] || "";
                 row.innerHTML = `
                     <td><span class="fabric-opt-chip">${optLabel}</span></td>
-                    <td><select class="fabric-row-type" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px;">${createTypeOptions(rowType)}</select></td>
+                    <td><select class="fabric-row-type" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%; min-width: 100px;">${createTypeOptions(rowType)}</select></td>
                     <td><input type="text" class="fabric-row-fabric" placeholder="Fabric" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
                     <td><input type="text" class="fabric-row-header" placeholder="Header" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
                     <td><input type="text" class="fabric-row-gms" placeholder="GMs" style="padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%;"></td>
@@ -1516,21 +1522,25 @@
                 refreshOptLabels();
             };
 
-            addBtn.addEventListener("click", () => {
-                if (tableBody.children.length >= maxFabricRows) return;
-                addRow(typeSelect.value);
-            });
-            
-            typeSelect.addEventListener("change", () => {
-                section.style.display = typeSelect.value ? "block" : "none";
-                const rows = tableBody.querySelectorAll("tr");
-                rows.forEach((row) => {
-                    const rowTypeSelect = row.querySelector(".fabric-row-type");
-                    if (rowTypeSelect && !rowTypeSelect.value) {
-                        rowTypeSelect.value = typeSelect.value || "";
-                    }
+            // Safeguard to prevent multiple listener bindings
+            if (!isFabricTableInitialized) {
+                addBtn.addEventListener("click", () => {
+                    if (tableBody.children.length >= maxFabricRows) return;
+                    addRow(typeSelect.value);
                 });
-            });
+                
+                typeSelect.addEventListener("change", () => {
+                    section.style.display = typeSelect.value ? "block" : "none";
+                    const rows = tableBody.querySelectorAll("tr");
+                    rows.forEach((row) => {
+                        const rowTypeSelect = row.querySelector(".fabric-row-type");
+                        if (rowTypeSelect && !rowTypeSelect.value) {
+                            rowTypeSelect.value = typeSelect.value || "";
+                        }
+                    });
+                });
+                isFabricTableInitialized = true;
+            }
 
             // Initialize with default state
             tableBody.innerHTML = '';
