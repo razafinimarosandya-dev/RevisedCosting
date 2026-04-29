@@ -818,6 +818,31 @@
                     <p style="font-size: 13px; color: var(--text-muted);">Real-time view of tasks requiring revision</p>
                 </div>
                 <div style="display: flex; gap: 12px; position: relative;">
+                    <!-- Month/Year Picker -->
+                    <div style="display: flex; align-items: center; gap: 8px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 4px 12px; border-radius: 10px;">
+                        <select id="fetch-month" class="form-select-small" onchange="loadRevisedTasks()" style="border:none; background:transparent; font-weight:600; font-size:13px; color:#1e293b; outline:none; cursor:pointer;">
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                        <div style="width: 1px; height: 16px; background: #e2e8f0;"></div>
+                        <select id="fetch-year" class="form-select-small" onchange="loadRevisedTasks()" style="border:none; background:transparent; font-weight:600; font-size:13px; color:#1e293b; outline:none; cursor:pointer;">
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                        </select>
+                    </div>
+
                     <div style="position: relative;">
                         <button class="btn btn-outline" id="btn-filter"
                             style="padding: 8px 16px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
@@ -1379,6 +1404,14 @@
 
             // Initial Load
             setupUserSession();
+            
+            // Set current month/year to selectors
+            const now = new Date();
+            const monthSel = document.getElementById('fetch-month');
+            const yearSel = document.getElementById('fetch-year');
+            if (monthSel) monthSel.value = now.getMonth() + 1;
+            if (yearSel) yearSel.value = now.getFullYear();
+
             loadRevisedTasks();
             initWizardListeners();
             setupNavigation();
@@ -1911,7 +1944,10 @@
             if (tableBody) tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 48px;">Streaming Data sheet...</td></tr>';
 
             try {
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=${encodeURIComponent('Costing_List')}&t=${new Date().getTime()}`);
+                const month = document.getElementById('fetch-month')?.value || (new Date().getMonth() + 1);
+                const year = document.getElementById('fetch-year')?.value || new Date().getFullYear();
+                
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?sheet=${encodeURIComponent('Costing_List')}&month=${month}&year=${year}&t=${new Date().getTime()}`);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                 const dataRows = await response.json();
